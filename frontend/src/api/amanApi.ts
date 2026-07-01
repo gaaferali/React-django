@@ -25,11 +25,15 @@ async function placeholderApi<T>(endpoint: string, fallback: T, options: ApiOpti
     });
 
     if (!response.ok) {
-      throw new Error(`Placeholder endpoint unavailable: ${endpoint}`);
+      const errorBody = await response.json().catch(() => ({ detail: `Request failed: ${endpoint}` }));
+      throw new Error(JSON.stringify(errorBody));
     }
 
     return (await response.json()) as T;
-  } catch {
+  } catch (error) {
+    if (!(error instanceof TypeError)) {
+      throw error;
+    }
     return fallback;
   }
 }

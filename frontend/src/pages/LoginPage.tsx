@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { LogIn } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { amanApi } from "../api/amanApi";
 import { Field, SelectField } from "../components/forms/Field";
 import { PageHeader } from "../components/ui/PageHeader";
@@ -33,6 +33,7 @@ export function LoginPage() {
         <SelectField id="role" name="role" label="Role" options={["Seeker", "Owner", "Admin"]} required />
         <button className="button form-submit" type="submit"><LogIn size={18} />Login</button>
       </form>
+      <p className="helper-link">No account yet? <Link to="/registration">Create a new AMAN account</Link>.</p>
       {error ? <p className="notice danger">{error}</p> : null}
     </section>
   );

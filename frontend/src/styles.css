@@ -294,6 +294,15 @@ p {
   color: #84341f;
 }
 
+.helper-link {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.helper-link a {
+  color: var(--teal);
+}
+
 .property-card {
   overflow: hidden;
 }
