@@ -14,6 +14,7 @@ export function LoginPage() {
     const payload = Object.fromEntries(new FormData(event.currentTarget).entries()) as { username: string; password: string; role: string };
     const result = await amanApi.login(payload);
     localStorage.setItem("aman_access_token", result.access);
+    localStorage.setItem("aman_refresh_token", result.refresh);
     if (result.role === "Admin") navigate("/admin/dashboard");
     else if (result.role === "Owner") navigate("/owner/home");
     else navigate("/seeker/home");

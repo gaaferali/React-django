@@ -33,6 +33,13 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
+#jwt settings
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -89,7 +96,13 @@ DATABASES = {
     }
 }
 
+#time 
+from datetime import timedelta
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+}
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

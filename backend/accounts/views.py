@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import User
-
+from .models import User
+from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class RegisterView(APIView):
@@ -13,44 +14,46 @@ class RegisterView(APIView):
 
         if serializer.is_valid():
             user = serializer.save()
+            refresh = RefreshToken.for_user(user)
             return Response(
                 {
                     "message": "User account created successfully",
                     "user": UserSerializer(user).data,
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
                 },
                 status=status.HTTP_201_CREATED,
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class AccountView(APIView):
+    permission_classes = [IsAuthenticated]
 
-class LoginView(APIView):
+    def get(self, request):
+        user = request.user
+
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "phone_number": user.phone_number,
+            "role": user.role,
+        })
+    
+class LogoutView(APIView):
 
     def post(self, request):
-        username = request.data.get("username")
-        password = request.data.get("password")
-
-        if not username or not password:
-            return Response(
-                {"error": "Username and password are required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
         try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            return Response(
-                {"error": "Invalid username or password."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
 
-        if not user.check_password(password):
-            return Response(
-                {"error": "Invalid username or password."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
+            return Response({
+                "message": "Logged out successfully"
+            }, status=200)
 
-        # If authentication is successful, you can return a success response
-        return Response(
-            {"message": "Login successful", "user": UserSerializer(user).data},
-            status=status.HTTP_200_OK,
-        )
+        except Exception:
+            return Response({
+                "error": "Invalid token"
+            }, status=400)
