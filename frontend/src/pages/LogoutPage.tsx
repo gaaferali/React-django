@@ -11,6 +11,7 @@ export function LogoutPage() {
   async function confirmLogout() {
     const result = await amanApi.logout();
     localStorage.removeItem("aman_access_token");
+    localStorage.removeItem("aman_refresh_token");
     setMessage(result.message);
     window.setTimeout(() => navigate("/login"), 500);
   }

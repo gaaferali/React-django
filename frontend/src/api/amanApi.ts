@@ -11,16 +11,22 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000
 type ApiOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
+  auth?: boolean;
 };
 
 async function placeholderApi<T>(endpoint: string, fallback: T, options: ApiOptions = {}): Promise<T> {
   try {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json"
+    };
+
+    if (options.auth !== false) {
+      headers.Authorization = `Bearer ${localStorage.getItem("aman_access_token") ?? "placeholder-jwt"}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: options.method ?? "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("aman_access_token") ?? "placeholder-jwt"}`
-      },
+      headers,
       body: options.body ? JSON.stringify(options.body) : undefined
     });
 
@@ -42,9 +48,9 @@ export const amanApi = {
   registration: (payload: Partial<User> & { password: string }) =>
     placeholderApi("/register/", { message: "User account created successfully", user: payload }, { method: "POST", body: payload }),
 
-  login: (payload: { username: string; password: string; role: string }) =>
-    placeholderApi("/login/", { access: "placeholder-access-token", refresh: "placeholder-refresh-token", role: payload.role }, { method: "POST", body: payload }),
-
+  login: (payload: { username: string; password: string; }) =>
+    placeholderApi("/login/", { access: "placeholder-access-token", refresh: "placeholder-refresh-token",  }, { method: "POST", body: payload }),
+  
   editInformation: (payload: Partial<User>) =>
     placeholderApi("/edit-information/", { message: "Information updated successfully", user: { ...currentUser, ...payload } }, { method: "PATCH", body: payload }),
 
@@ -52,7 +58,6 @@ export const amanApi = {
     placeholderApi("/add-property/", { message: "New property offer created", property_id: 104 }, { method: "POST", body: Object.fromEntries(payload.entries()) }),
 
   manageProperty: () => placeholderApi("/manage-property/", properties),
-
   deleteProperty: (propertyId: number) =>
     placeholderApi(`/manage-property/${propertyId}/`, { message: "Property deleted" }, { method: "DELETE" }),
 
@@ -103,5 +108,23 @@ export const amanApi = {
   reports: (reportType: ReportType) =>
     placeholderApi(`/reports/?type=${reportType}`, reportRows.filter((row) => row.type.toLowerCase().includes(reportType.slice(0, -1)))),
 
-  logout: () => placeholderApi("/logout/", { message: "User logged out successfully" }, { method: "POST" })
+  getuserprofile: () =>
+     placeholderApi("/account/",      
+       { message: "User exists" },
+      {
+        method: "GET",
+        auth: false,
+        body: { refresh: localStorage.getItem("aman_refresh_token") }
+      }),
+
+  logout: () =>
+    placeholderApi(
+      "/logout/",
+      { message: "User logged out successfully" },
+      {
+        method: "POST",
+        auth: false,
+        body: { refresh: localStorage.getItem("aman_refresh_token") }
+      }
+    )
 };

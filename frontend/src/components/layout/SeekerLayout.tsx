@@ -2,18 +2,19 @@ import { Building2, FileBarChart2, HeartHandshake, Home, LogIn, LogOut, MessageS
 import { NavLink, Outlet } from "react-router-dom";
 
 const navItems = [
-  { label: "Seeker Home", to: "/seeker/home", icon: Home },
+  { label: "Seeker", to: "/seeker/home", icon: Home },
   { label: "Search", to: "/seeker/search-for-property", icon: Search },
   { label: "Offers", to: "/seeker/offer-display", icon: Building2 },
-  { label: "Owner", to: "/owner/home", icon: UserCog },
-  { label: "Contact", to: "/contact", icon: MessageSquare },
-  { label: "Deals", to: "/deals", icon: HeartHandshake },
-  { label: "Reports", to: "/admin/reports", icon: FileBarChart2 },
-  { label: "Login", to: "/login", icon: LogIn },
-  { label: "Logout", to: "/logout", icon: LogOut }
-];
+  { label: "Edit Profile", to: "/seeker/profile/edit-information", icon: UserCog},
+  { label: "Contact", to: "/seeker/contact", icon: MessageSquare },
+  { label: "Deals", to: "/seeker/deals", icon: HeartHandshake },
+  { label: "Fair Price average", to: "/seeker/fair-price-average", icon: FileBarChart2 },
+  { label: "Search Filters", to: "/seeker/search-filter", icon: Search },
+  { label: "Offer Recommendation", to: "/seeker/offer-recommendation", icon: HeartHandshake },
+  { label: "Logout", to: "/seeker/logout", icon: LogOut }
+]; 
 
-export function AppLayout() {
+export function SeekerLayout() {
   return (
     <div className="app-shell">
       <aside className="sidebar" aria-label="AMAN navigation">

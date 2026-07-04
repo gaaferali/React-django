@@ -2,12 +2,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .serializers import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 
 class RegisterView(APIView):
+
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -44,16 +47,40 @@ class AccountView(APIView):
 class LogoutView(APIView):
 
     def post(self, request):
+        refresh_token = request.data.get("refresh")
+        if not refresh_token:
+            return Response(
+                {"error": "Refresh token is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         try:
-            refresh_token = request.data["refresh"]
             token = RefreshToken(refresh_token)
             token.blacklist()
+        except TokenError:
+            return Response(
+                {"error": "Invalid or expired refresh token."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-            return Response({
-                "message": "Logged out successfully"
-            }, status=200)
+        return Response(
+            {"message": "Logged out successfully"},
+            status=status.HTTP_200_OK,
+        )
+        
+class UpdateInformationView(APIView):
+    permission_classes = [IsAuthenticated]
 
-        except Exception:
+    def patch(self, request):
+        user = request.user
+        serializer = UserSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.update_information(user, serializer.validated_data)
+            user.save()
             return Response({
-                "error": "Invalid token"
-            }, status=400)
+                "message": "User information updated successfully",
+                "user": UserSerializer(user).data,
+            }, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
