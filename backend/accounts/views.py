@@ -1,11 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import User
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .serializers import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+
+from .models import User
+from .serializers import CustomTokenObtainPairSerializer, UserSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 class RegisterView(APIView):
@@ -75,12 +77,18 @@ class UpdateInformationView(APIView):
         user = request.user
         serializer = UserSerializer(user, data=request.data, partial=True)
 
-        if serializer.is_valid():
-            serializer.update_information(user, serializer.validated_data)
-            user.save()
-            return Response({
+        serializer.is_valid(raise_exception=True)
+        serializer.update_information(user, serializer.validated_data)
+        user.save()
+
+        return Response(
+            {
                 "message": "User information updated successfully",
                 "user": UserSerializer(user).data,
-            }, status=status.HTTP_200_OK)
+            },
+            status=status.HTTP_200_OK,
+        )
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

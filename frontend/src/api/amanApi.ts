@@ -14,20 +14,52 @@ type ApiOptions = {
   auth?: boolean;
 };
 
+export type AmanUserResponse = {
+  id?: number;
+  full_name: string;
+  username: string;
+  email: string;
+  phone_number: string;
+  role: string;
+};
+
+export type AmanAuthResponse = {
+  message: string;
+  access: string;
+  refresh: string;
+  role?: string;
+  user: AmanUserResponse;
+};
+
+export type AmanProfileResponse = AmanUserResponse & {
+  id: number;
+};
+
+export type AmanMessageResponse = {
+  message: string;
+};
+
 async function placeholderApi<T>(endpoint: string, fallback: T, options: ApiOptions = {}): Promise<T> {
   try {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json"
-    };
+    const headers: Record<string, string> = {};
 
-    if (options.auth !== false) {
-      headers.Authorization = `Bearer ${localStorage.getItem("aman_access_token") ?? "placeholder-jwt"}`;
+    const token = localStorage.getItem("aman_access_token");
+    if (options.auth !== false && token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    let body: BodyInit | undefined;
+    if (options.body instanceof FormData) {
+      body = options.body;
+    } else if (options.body !== undefined) {
+      headers["Content-Type"] = "application/json";
+      body = JSON.stringify(options.body);
     }
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: options.method ?? "GET",
       headers,
-      body: options.body ? JSON.stringify(options.body) : undefined
+      body
     });
 
     if (!response.ok) {
@@ -45,19 +77,73 @@ async function placeholderApi<T>(endpoint: string, fallback: T, options: ApiOpti
 }
 
 export const amanApi = {
-  registration: (payload: Partial<User> & { password: string }) =>
-    placeholderApi("/register/", { message: "User account created successfully", user: payload }, { method: "POST", body: payload }),
+  registration: (payload: Partial<User> & { password: string; confirm_password?: string }) =>
+    placeholderApi<AmanAuthResponse>(
+      "/register/",
+      {
+        message: "User account created successfully",
+        access: "placeholder-access-token",
+        refresh: "placeholder-refresh-token",
+        user: {
+          full_name: "",
+          username: "",
+          email: "",
+          phone_number: "",
+          role: "Owner"
+        }
+      },
+      { method: "POST", body: payload, auth: false }
+    ),
 
-  login: (payload: { username: string; password: string; }) =>
-    placeholderApi("/login/", { access: "placeholder-access-token", refresh: "placeholder-refresh-token",  }, { method: "POST", body: payload }),
-  
-  editInformation: (payload: Partial<User>) =>
-    placeholderApi("/edit-information/", { message: "Information updated successfully", user: { ...currentUser, ...payload } }, { method: "PATCH", body: payload }),
+  login: (payload: { username: string; password: string }) =>
+    placeholderApi<AmanAuthResponse>(
+      "/login/",
+      {
+        message: "Login successful",
+        access: "placeholder-access-token",
+        refresh: "placeholder-refresh-token",
+        user: {
+          full_name: "",
+          username: payload.username,
+          email: "",
+          phone_number: "",
+          role: "Seeker"
+        }
+      },
+      { method: "POST", body: payload, auth: false }
+    ),
+
+  editInformation: (
+    payload: Partial<User> & {
+      password?: string;
+      confirm_password?: string;
+      current_password?: string;
+    }
+  ) =>
+    placeholderApi<{ message: string; user: AmanUserResponse }>(
+      "/edit-information/",
+      {
+        message: "Information updated successfully",
+        user: {
+          full_name: currentUser.full_name,
+          username: currentUser.username,
+          email: currentUser.email,
+          phone_number: currentUser.phone_number,
+          role: currentUser.role
+        }
+      },
+      { method: "PATCH", body: payload }
+    ),
 
   addProperty: (payload: FormData) =>
-    placeholderApi("/add-property/", { message: "New property offer created", property_id: 104 }, { method: "POST", body: Object.fromEntries(payload.entries()) }),
+    placeholderApi<AmanMessageResponse>(
+      "/addProperty/",
+      { message: "New property offer created" },
+      { method: "POST", body: payload }
+    ),
 
   manageProperty: () => placeholderApi("/manage-property/", properties),
+
   deleteProperty: (propertyId: number) =>
     placeholderApi(`/manage-property/${propertyId}/`, { message: "Property deleted" }, { method: "DELETE" }),
 
@@ -65,11 +151,15 @@ export const amanApi = {
     placeholderApi(`/manage-property/${propertyId}/validity/`, { message: "Property validity updated for 30 days" }, { method: "PATCH" }),
 
   searchForProperty: (criteria: SearchCriteria) =>
-    placeholderApi("/search-for-property/", properties.filter((property) => {
-      return (!criteria.city || property.city.toLowerCase().includes(criteria.city.toLowerCase())) &&
-        (!criteria.property_type || property.property_type === criteria.property_type) &&
-        (!criteria.transaction_type || property.transaction_type === criteria.transaction_type);
-    }), { method: "POST", body: criteria }),
+    placeholderApi(
+      "/search-for-property/",
+      properties.filter((property) => {
+        return (!criteria.city || property.city.toLowerCase().includes(criteria.city.toLowerCase())) &&
+          (!criteria.property_type || property.property_type === criteria.property_type) &&
+          (!criteria.transaction_type || property.transaction_type === criteria.transaction_type);
+      }),
+      { method: "POST", body: criteria }
+    ),
 
   searchFilter: (criteria: Partial<SearchCriteria>) =>
     placeholderApi("/search-filter/", properties, { method: "POST", body: criteria }),
@@ -80,17 +170,25 @@ export const amanApi = {
     placeholderApi(`/offer-display/${propertyId}/`, properties.find((property) => property.property_id === propertyId) ?? properties[0]),
 
   offerRecommendation: (criteria: Partial<SearchCriteria>) =>
-    placeholderApi("/offer-recommendation/", {
-      message: "Search preferences saved. You will be notified when a matching property becomes available.",
-      recommendations: properties.slice(0, 2)
-    }, { method: "POST", body: criteria }),
+    placeholderApi(
+      "/offer-recommendation/",
+      {
+        message: "Search preferences saved. You will be notified when a matching property becomes available.",
+        recommendations: properties.slice(0, 2)
+      },
+      { method: "POST", body: criteria }
+    ),
 
   fairPriceAverage: (criteria: Partial<SearchCriteria> & { month: string }): Promise<FairPriceAverageResult> =>
-    placeholderApi("/fair-price-average/", {
-      average_price: 375000,
-      listing_count: 5,
-      message: "Average price calculated from similar listings in the same city."
-    }, { method: "POST", body: criteria }),
+    placeholderApi(
+      "/fair-price-average/",
+      {
+        average_price: 375000,
+        listing_count: 5,
+        message: "Average price calculated from similar listings in the same city."
+      },
+      { method: "POST", body: criteria }
+    ),
 
   contact: () => placeholderApi("/contact/", { chats, messages: chatMessages }),
 
@@ -108,23 +206,34 @@ export const amanApi = {
   reports: (reportType: ReportType) =>
     placeholderApi(`/reports/?type=${reportType}`, reportRows.filter((row) => row.type.toLowerCase().includes(reportType.slice(0, -1)))),
 
-  getuserprofile: () =>
-     placeholderApi("/account/",      
-       { message: "User exists" },
+  getUserProfile: () =>
+    placeholderApi<AmanProfileResponse>(
+      "/account/",
+      {
+        id: currentUser.user_id,
+        full_name: currentUser.full_name,
+        username: currentUser.username,
+        email: currentUser.email,
+        phone_number: currentUser.phone_number,
+        role: currentUser.role
+      },
       {
         method: "GET",
-        auth: false,
-        body: { refresh: localStorage.getItem("aman_refresh_token") }
-      }),
+        auth: true
+      }
+    ),
 
-  logout: () =>
-    placeholderApi(
+  logout: () => {
+    const refresh = localStorage.getItem("aman_refresh_token");
+
+    return placeholderApi<AmanMessageResponse>(
       "/logout/",
       { message: "User logged out successfully" },
       {
         method: "POST",
         auth: false,
-        body: { refresh: localStorage.getItem("aman_refresh_token") }
+        body: refresh ? { refresh } : {}
       }
-    )
+    );
+  }
 };

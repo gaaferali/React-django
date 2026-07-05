@@ -13,38 +13,31 @@ export function RegistrationPage() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-try {
-  const result = await amanApi.registration(
-    Object.fromEntries(formData.entries()) as never
-  );
 
-  setMessage(result.message);
-  setError("");
+    try {
+      const result = await amanApi.registration(Object.fromEntries(formData.entries()) as never);
 
-  // 1. خذ role من response
-  const role = result.user.role;
+      localStorage.setItem("aman_access_token", result.access);
+      localStorage.setItem("aman_refresh_token", result.refresh);
+      localStorage.setItem("role", result.role ?? result.user?.role ?? "");
 
-  // 2. خزنه
-  if (role) {
-    localStorage.setItem("role", role);
-    
-    // 3. routes mapping
-    const routes: Record<string, string> = {
-      Admin: "/admin/dashboard",
-      Seeker: "/seeker/home",
-      Owner: "/owner/home",
-    };
+      setMessage(result.message);
+      setError("");
 
-    // 4. redirect حسب role
-    navigate(routes[role] || "/");
-  }
+      const role = result.role ?? result.user?.role;
+      const routes: Record<string, string> = {
+        Admin: "/admin/dashboard",
+        Seeker: "/seeker/home",
+        Owner: "/owner/home",
+      };
 
-} catch (apiError) {
-  setMessage("");
-  setError(
-    apiError instanceof Error ? apiError.message : "Registration failed."
-  );
-} 
+      if (role) {
+        navigate(routes[role] || "/");
+      }
+    } catch (apiError) {
+      setMessage("");
+      setError(apiError instanceof Error ? apiError.message : "Registration failed.");
+    }
   }
 
   return (
@@ -60,10 +53,13 @@ try {
         <Field id="username" name="username" label="Username" required />
         <Field id="phone_number" name="phone_number" label="Phone number" required />
         {/*<Field id="id_number" name="id_number" label="ID number" required />*/}
-        <SelectField id="role" name="role" label="Account type" options={["Owner", "Seeker","Admin"]} required />
+        <SelectField id="role" name="role" label="Account type" options={["Owner", "Seeker", "Admin"]} required />
         <Field id="password" name="password" label="Password" type="password" minLength={8} required />
         <Field id="confirm_password" name="confirm_password" label="Confirm password" type="password" minLength={8} required />
-        <button className="button form-submit" type="submit"><UserPlus size={18} />Create account</button>
+        <button className="button form-submit" type="submit">
+          <UserPlus size={18} />
+          Create account
+        </button>
       </form>
       {message ? <p className="notice">{message}</p> : null}
       {error ? <p className="notice danger">{error}</p> : null}

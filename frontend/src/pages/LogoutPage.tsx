@@ -8,13 +8,37 @@ export function LogoutPage() {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
 
-  async function confirmLogout() {
+ {/* async function confirmLogout() {
     const result = await amanApi.logout();
     localStorage.removeItem("aman_access_token");
     localStorage.removeItem("aman_refresh_token");
     setMessage(result.message);
     window.setTimeout(() => navigate("/login"), 500);
+  }*/}
+
+async function confirmLogout() {
+  try {
+    const result = await amanApi.logout();
+
+    localStorage.removeItem("aman_access_token");
+    localStorage.removeItem("aman_refresh_token");
+
+    setMessage(result.message);
+
+    window.setTimeout(() => {
+      navigate("/login");
+    }, 500);
+
+  } catch (error) {
+    console.log("Logout error:", error);
+
+    // حتى لو فشل backend، اعمل logout محلي
+    localStorage.removeItem("aman_access_token");
+    localStorage.removeItem("aman_refresh_token");
+
+    navigate("/login");
   }
+}
 
   return (
     <section>
