@@ -10,7 +10,7 @@ export type User = {
   role: UserRole;
 };
 
-export type Property = {
+/*export type Property = {
   property_id: number;
   owner_id: number;
   transaction_type: "Buy" | "Rent";
@@ -26,7 +26,29 @@ export type Property = {
   status: "Active" | "Inactive" | "Completed";
   updated_at: string;
   images: string[];
+};*/
+
+export type PropertyImage = {
+  id: number;
+  image: string;
 };
+
+export type Property = {
+  id: number;
+  owner_id: number;
+  property_type: string;
+  transaction_type: string;
+  city: string;
+  state: string;
+  bedroom: number;
+  bathroom: number;
+  price: number;
+  description: string;
+  property_document: string | null;
+  images: PropertyImage[];
+};
+
+
 
 export type SearchCriteria = {
   transaction_type: string;

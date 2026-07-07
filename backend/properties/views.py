@@ -52,7 +52,29 @@ class MyPropertiesView(APIView):
         )
 
         return Response(serializer.data)
-    
+class ThePropertiesView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+
+        property = Property.objects.filter(
+            id=pk
+        ).first()
+
+        if property is None:
+
+            return Response(
+                {
+                    "message": "Property not found."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = PropertySerializer(property)
+
+        return Response(serializer.data)
+        
 class DeletePropertyView(APIView):
 
     permission_classes = [IsAuthenticated]

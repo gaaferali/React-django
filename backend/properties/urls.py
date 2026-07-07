@@ -6,6 +6,7 @@ from .views import (
     PropertyCreateView,
     MyPropertiesView,
     DeletePropertyView,
+    ThePropertiesView,
 )
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
     path("token/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path("my-properties/", MyPropertiesView.as_view()),
     path("properties/<int:pk>/", DeletePropertyView.as_view()),
+    path("offer-display/<int:pk>/", ThePropertiesView.as_view()),
 ]

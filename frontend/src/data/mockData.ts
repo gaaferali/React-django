@@ -10,59 +10,6 @@ export const currentUser: User = {
   role: "Owner"
 };
 
-export const properties: Property[] = [
-  {
-    property_id: 101,
-    owner_id: 7,
-    transaction_type: "Rent",
-    property_type: "Apartment",
-    state: "Khartoum",
-    city: "Omdurman",
-    bedrooms: 3,
-    bathrooms: 2,
-    price: 450000,
-    location: "Omdurman, Althawra",
-    area: 140,
-    description: "Verified family apartment near services with secure owner contact.",
-    status: "Active",
-    updated_at: "2026-06-18",
-    images: ["Apartment front", "Living room", "Map location"]
-  },
-  {
-    property_id: 102,
-    owner_id: 9,
-    transaction_type: "Buy",
-    property_type: "House",
-    state: "Khartoum",
-    city: "Bahri",
-    bedrooms: 4,
-    bathrooms: 3,
-    price: 36000000,
-    location: "Bahri, Kafouri",
-    area: 310,
-    description: "House listing with uploaded property document and recent images.",
-    status: "Active",
-    updated_at: "2026-06-20",
-    images: ["House exterior", "Property document", "Map location"]
-  },
-  {
-    property_id: 103,
-    owner_id: 7,
-    transaction_type: "Rent",
-    property_type: "House",
-    state: "Gezira",
-    city: "Wad Madani",
-    bedrooms: 2,
-    bathrooms: 1,
-    price: 300000,
-    location: "Wad Madani center",
-    area: 110,
-    description: "Compact rental home suitable for relocation and short-term housing.",
-    status: "Inactive",
-    updated_at: "2026-05-28",
-    images: ["House entrance", "Kitchen"]
-  }
-];
 
 export const chats: Chat[] = [
   {

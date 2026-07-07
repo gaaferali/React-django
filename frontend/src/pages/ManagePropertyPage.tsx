@@ -20,7 +20,7 @@ export function ManagePropertyPage() {
 
   async function deleteProperty(propertyId: number) {
     const result = await amanApi.deleteProperty(propertyId);
-    setItems((current) => current.filter((property) => property.property_id !== propertyId));
+    setItems((current) => current.filter((property) => property.id !== propertyId));
     setMessage(result.message);
   }
 
@@ -30,11 +30,11 @@ export function ManagePropertyPage() {
       {message ? <p className="notice">{message}</p> : null}
       <div className="stack">
         {items.map((property) => (
-          <div className="management-row" key={property.property_id}>
+          <div className="management-row" key={property.id}>
             <PropertyCard property={property} />
             <div className="row-actions">
-              <button className="icon-button" type="button" title="Update property validity" onClick={() => refreshValidity(property.property_id)}><RefreshCw size={18} /></button>
-              <button className="icon-button danger" type="button" title="Delete property" onClick={() => deleteProperty(property.property_id)}><Trash2 size={18} /></button>
+              <button className="icon-button" type="button" title="Update property validity" onClick={() => refreshValidity(property.id)}><RefreshCw size={18} /></button>
+              <button className="icon-button danger" type="button" title="Delete property" onClick={() => deleteProperty(property.id)}><Trash2 size={18} /></button>
             </div>
           </div>
         ))}

@@ -586,3 +586,161 @@ th {
     grid-template-columns: 1fr;
   }
 }
+ 
+
+
+
+
+
+
+
+
+/* ============================= */
+/* Offer Details Page New Design */
+/* ============================= */
+
+.offer-details-page {
+  width: 100%;
+}
+
+.offer-details-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+
+/* Images gallery */
+
+.property-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  width: 100%;
+  margin: 20px 0 35px;
+}
+
+.gallery-image {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+
+/* Document image */
+
+.document-image {
+  width: 100%;
+  max-width: 650px;
+  height: auto;
+  display: block;
+  margin: 20px 0 35px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+
+/* Information section */
+
+.property-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  margin-top: 25px;
+}
+
+
+.property-info > div {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+
+.property-info strong {
+  color: var(--forest);
+  display: block;
+  margin-bottom: 8px;
+}
+
+
+.property-info p {
+  color: var(--muted);
+  margin: 0;
+}
+
+
+.description-block {
+  grid-column: 1 / -1;
+}
+
+
+/* Buttons */
+
+.offer-details-container .button-row {
+  margin-top: 30px;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+  .property-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-image {
+    height: 220px;
+  }
+
+  .property-info {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+
+
+/* Property gallery layout */
+
+.property-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  width: 100%;
+  margin: 20px 0 35px;
+}
+
+/* First image takes full width */
+.property-gallery .gallery-image:first-child {
+  grid-column: 1 / -1;
+  height: 420px;
+}
+
+/* Other images */
+.property-gallery .gallery-image:not(:first-child) {
+  height: 260px;
+}
+
+
+@media (max-width: 700px) {
+
+  .property-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .property-gallery .gallery-image:first-child,
+  .property-gallery .gallery-image:not(:first-child) {
+    grid-column: auto;
+    height: 240px;
+  }
+
+}

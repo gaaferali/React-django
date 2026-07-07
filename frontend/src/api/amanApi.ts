@@ -1,9 +1,10 @@
-import { chatMessages, chats, currentUser, deals, properties, reportRows } from "../data/mockData";
+import { chatMessages, chats, currentUser, deals, reportRows } from "../data/mockData";
 import type {
   FairPriceAverageResult,
   ReportType,
   SearchCriteria,
-  User
+  User,
+  Property
 } from "../types/aman";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api";
@@ -38,6 +39,11 @@ export type AmanProfileResponse = AmanUserResponse & {
 export type AmanMessageResponse = {
   message: string;
 };
+
+
+
+
+
 
 async function placeholderApi<T>(endpoint: string, fallback: T, options: ApiOptions = {}): Promise<T> {
   try {
@@ -142,7 +148,15 @@ export const amanApi = {
       { method: "POST", body: payload }
     ),
 
-  manageProperty: () => placeholderApi("/manage-property/", properties),
+manageProperty: () =>
+  placeholderApi<Property[]>(
+    "/my-properties/",
+    [],
+    {
+      method: "GET",
+      auth: true
+    }
+  ),
 
   deleteProperty: (propertyId: number) =>
     placeholderApi(`/manage-property/${propertyId}/`, { message: "Property deleted" }, { method: "DELETE" }),
@@ -150,34 +164,45 @@ export const amanApi = {
   updatePropertyValidity: (propertyId: number) =>
     placeholderApi(`/manage-property/${propertyId}/validity/`, { message: "Property validity updated for 30 days" }, { method: "PATCH" }),
 
-  searchForProperty: (criteria: SearchCriteria) =>
-    placeholderApi(
-      "/search-for-property/",
-      properties.filter((property) => {
-        return (!criteria.city || property.city.toLowerCase().includes(criteria.city.toLowerCase())) &&
-          (!criteria.property_type || property.property_type === criteria.property_type) &&
-          (!criteria.transaction_type || property.transaction_type === criteria.transaction_type);
-      }),
-      { method: "POST", body: criteria }
-    ),
+  //searchForProperty: (criteria: SearchCriteria) =>
+  //  placeholderApi(
+    //  "/search-for-property/",
+      //property.filter((property) => {
+        //return (!criteria.city || property.city.toLowerCase().includes(criteria.city.toLowerCase())) &&
+          //(!criteria.property_type || property.property_type === criteria.property_type) &&
+          //(!criteria.transaction_type || property.transaction_type === criteria.transaction_type);
+      //}),
+      //{ method: "POST", body: criteria }
+    //),
 
-  searchFilter: (criteria: Partial<SearchCriteria>) =>
-    placeholderApi("/search-filter/", properties, { method: "POST", body: criteria }),
+  //searchFilter: (criteria: Partial<SearchCriteria>) =>
+    //placeholderApi("/search-filter/", property.id, { method: "POST", body: criteria }),
 
-  offerDisplay: () => placeholderApi("/offer-display/", properties.filter((property) => property.status === "Active")),
+  //offerDisplay: () => placeholderApi("/offer-display/", Property.filter((property) => property.status === "Active")),
 
-  offerDetails: (propertyId: number) =>
-    placeholderApi(`/offer-display/${propertyId}/`, properties.find((property) => property.property_id === propertyId) ?? properties[0]),
 
-  offerRecommendation: (criteria: Partial<SearchCriteria>) =>
+offerDetails: (propertyId: number) =>
+  placeholderApi<Property>(
+    `/offer-display/${propertyId}/`,
+    {} as Property,
+    {
+      method: "GET",
+      auth: true
+    }
+  ),
+
+  //offerDetails: (propertyId: number) =>
+    //placeholderApi(`/offer-display/${propertyId}/`, Property.find((property) => property.id === propertyId) ?? Property[0]),
+
+  /*offerRecommendation: (criteria: Partial<SearchCriteria>) =>
     placeholderApi(
       "/offer-recommendation/",
       {
         message: "Search preferences saved. You will be notified when a matching property becomes available.",
-        recommendations: properties.slice(0, 2)
+        recommendations: Property.slice(0, 2)
       },
       { method: "POST", body: criteria }
-    ),
+    ),*/
 
   fairPriceAverage: (criteria: Partial<SearchCriteria> & { month: string }): Promise<FairPriceAverageResult> =>
     placeholderApi(

@@ -23,6 +23,7 @@ import { SearchFilterPage } from "./pages/SearchFilterPage";
 import { SearchForPropertyPage } from "./pages/SearchForPropertyPage";
 import { SeekerHomePage } from "./pages/SeekerHomePage";
 
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
       { path: "home", element: <OwnerHomePage /> },
       { path: "add-property", element: <AddPropertyPage /> },
       { path: "manage-property", element: <ManagePropertyPage /> },
+      { path: "offerDetails/:propertyId", element: <OfferDetailsPage /> },
       { path: "deals", element: <DealsPage /> },
       { path: "logout", element: <LogoutPage /> },
       { path: "profile/edit-information", element: <EditInformationPage /> },
@@ -57,7 +59,7 @@ export const router = createBrowserRouter([
       { path: "search-filter", element: <SearchFilterPage /> },
       { path: "offer-display", element: <OfferDisplayPage /> },
       { path: "deals", element: <DealsPage /> },
-      { path: "offer-display/:propertyId", element: <OfferDetailsPage /> },
+      { path: "offerDetails/:propertyId", element: <OfferDetailsPage /> },
       { path: "offer-recommendation", element: <OfferRecommendationPage /> },
       { path: "fair-price-average", element: <FairPriceAveragePage /> },
       { path: "profile/edit-information", element: <EditInformationPage /> },
