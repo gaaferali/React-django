@@ -29,14 +29,14 @@ export function SearchForPropertyPage() {
         <SelectField id="property_type" name="property_type" label="Property type" options={["Apartment", "House", "Land"]} />
         <Field id="state" name="state" label="State" />
         <Field id="city" name="city" label="City" />
-        <Field id="bedrooms" name="bedrooms" label="Bedrooms" type="number" min="0" />
-        <Field id="bathrooms" name="bathrooms" label="Bathrooms" type="number" min="0" />
+        <Field id="bedroom" name="bedrooms" label="Bedrooms" type="number" min="0" />
+        <Field id="bathroom" name="bathrooms" label="Bathrooms" type="number" min="0" />
         <Field id="min_price" name="min_price" label="Minimum price" type="number" min="0" />
         <Field id="max_price" name="max_price" label="Maximum price" type="number" min="0" />
         <button className="button form-submit" type="submit"><Search size={18} />Search</button>
       </form>
       <div className="property-grid">
-        {results.map((property) => <PropertyCard key={property.property_id} property={property} />)}
+        {results.map((property) => <PropertyCard key={property.id} property={property} />)}
       </div>
     </section>
   );

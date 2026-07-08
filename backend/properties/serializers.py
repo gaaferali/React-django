@@ -23,6 +23,7 @@ class PropertySerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "property_type",
+            "owner_id",
             "transaction_type",
             "city",
             "state",

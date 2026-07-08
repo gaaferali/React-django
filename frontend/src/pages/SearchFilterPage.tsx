@@ -25,7 +25,7 @@ export function SearchFilterPage() {
         <button className="button form-submit" type="submit"><SlidersHorizontal size={18} />Apply filters</button>
       </form>
       <div className="property-grid">
-        {results.map((property) => <PropertyCard key={property.property_id} property={property} />)}
+        {results.map((property) => <PropertyCard key={property.id} property={property} />)}
       </div>
     </section>
   );

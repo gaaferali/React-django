@@ -8,10 +8,10 @@ type PropertyCardProps = {
 };
 
 const API_URL = "http://127.0.0.1:8000";
-
+const role = localStorage.getItem("role") || "";
 export function PropertyCard({
   property,
-  detailPath = `/owner/offerDetails/${property.id}`,
+  detailPath = `/${role}/offerDetails/${property.id}`,
 }: PropertyCardProps) {
 
   // use first property image

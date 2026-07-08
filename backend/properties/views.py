@@ -35,7 +35,23 @@ class PropertyCreateView(APIView):
             PropertySerializer(property).data,
             status=status.HTTP_201_CREATED,
         )
+
+class ShowPropertiesView(APIView):
     
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        queryset = Property.objects.all()
+
+        serializer = PropertySerializer(
+            queryset,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+
 class MyPropertiesView(APIView):
 
     permission_classes = [IsAuthenticated]
@@ -101,6 +117,115 @@ class DeletePropertyView(APIView):
             {
                 "message": "Deleted successfully."
             },
-            status=status.HTTP_204_NO_CONTENT
+            status=status.HTTP_200_OK
         )
     
+class SearchPropertiesView(APIView):
+
+    def post(self, request):
+
+        criteria = request.data
+
+        queryset = Property.objects.all()
+
+        if "transaction_type" in criteria:
+            queryset = queryset.filter(
+                transaction_type=criteria["transaction_type"]
+            )
+
+        if "property_type" in criteria:
+            queryset = queryset.filter(
+                property_type=criteria["property_type"]
+            )
+
+        if "state" in criteria:
+            queryset = queryset.filter(
+                state__icontains=criteria["state"]
+            )
+
+        if "city" in criteria:
+            queryset = queryset.filter(
+                city__icontains=criteria["city"]
+            )
+
+        if "bedroom" in criteria:
+            queryset = queryset.filter(
+                bedrooms__gte=criteria["bedroom"]
+            )
+
+        if "bathroom" in criteria:
+            queryset = queryset.filter(
+                bathrooms__gte=criteria["bathroom"]
+            )
+
+        if "min_price" in criteria:
+            queryset = queryset.filter(
+                price__gte=criteria["min_price"]
+            )
+
+        if "max_price" in criteria:
+            queryset = queryset.filter(
+                price__lte=criteria["max_price"]
+            )
+
+        serializer = PropertySerializer(
+            queryset,
+            many=True
+        )
+
+        return Response(serializer.data)
+    
+class filterPropertiesView(APIView):
+
+    def post(self, request):
+
+        criteria = request.data
+
+        queryset = Property.objects.all()
+
+        if "transaction_type" in criteria:
+            queryset = queryset.filter(
+                transaction_type=criteria["transaction_type"]
+            )
+
+        if "property_type" in criteria:
+            queryset = queryset.filter(
+                property_type=criteria["property_type"]
+            )
+
+        if "state" in criteria:
+            queryset = queryset.filter(
+                state__icontains=criteria["state"]
+            )
+
+        if "city" in criteria:
+            queryset = queryset.filter(
+                city__icontains=criteria["city"]
+            )
+
+        if "bedroom" in criteria:
+            queryset = queryset.filter(
+                bedrooms__gte=criteria["bedroom"]
+            )
+
+        if "bathroom" in criteria:
+            queryset = queryset.filter(
+                bathrooms__gte=criteria["bathroom"]
+            )
+
+        if "min_price" in criteria:
+            queryset = queryset.filter(
+                price__gte=criteria["min_price"]
+            )
+
+        if "max_price" in criteria:
+            queryset = queryset.filter(
+                price__lte=criteria["max_price"]
+            )
+
+        serializer = PropertySerializer(
+            queryset,
+            many=True
+        )
+
+        return Response(serializer.data)

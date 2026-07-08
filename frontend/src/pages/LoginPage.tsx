@@ -21,8 +21,8 @@ export function LoginPage() {
 
       localStorage.setItem("aman_access_token", result.access);
       localStorage.setItem("aman_refresh_token", result.refresh);
-      localStorage.setItem("role", result.role ?? result.user?.role ?? "");
-
+      localStorage.setItem("role", result.role ?? "");
+      localStorage.setItem("aman_user", JSON.stringify(result.user ?? {}));
       const role = result.role ?? result.user?.role;
       if (role === "Admin") navigate("/admin/dashboard");
       else if (role === "Owner") navigate("/owner/home");

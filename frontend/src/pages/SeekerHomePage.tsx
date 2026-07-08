@@ -1,4 +1,4 @@
-import { Calculator, HeartHandshake, MessageSquare, Search, Sparkles } from "lucide-react";
+import { Calculator, HeartHandshake, MessageSquare, Search, Sparkles, UserRoundCog } from "lucide-react";
 import { FeatureCard } from "../components/ui/FeatureCard";
 import { PageHeader } from "../components/ui/PageHeader";
 
@@ -12,6 +12,8 @@ export function SeekerHomePage() {
         <FeatureCard code="FR-10" title="Fair Price Average" description="Calculate average prices from similar listings in the same city." to="/seeker/fair-price-average" icon={Calculator} />
         <FeatureCard code="FR-12" title="Deals" description="Send requests, review status, complete deals, and rate users." to="/deals" icon={HeartHandshake} />
         <FeatureCard code="FR-11" title="Contact" description="Message owners directly from an active property offer." to="/contact" icon={MessageSquare} />
+        <FeatureCard code="FR-03" title="Edit Information" description="Maintain owner profile information and secure contact details." to="/seeker/profile/edit-information" icon={UserRoundCog} />
+
       </div>
     </section>
   );

@@ -1,16 +1,18 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Save } from "lucide-react";
 import { amanApi } from "../api/amanApi";
-import { currentUser } from "../data/mockData";
+//import { currentUser } from "../data/mockData";
 import { Field } from "../components/forms/Field";
 import { PageHeader } from "../components/ui/PageHeader";
+import type { User } from "../types/aman";
 
 type Profile = {
+//  id: number;
   full_name: string;
   username: string;
   email: string;
   phone_number: string;
-  role?: string;
+  //role?: string;
 };
 
 export function EditInformationPage() {
@@ -23,20 +25,19 @@ export function EditInformationPage() {
 
     async function loadProfile() {
       try {
-        const data = await amanApi.getUserProfile();
+        const data = await amanApi.getUserProfile() as User;
         if (isMounted) {
           setProfile({
-            full_name: data.full_name ?? currentUser.full_name,
-            username: data.username ?? currentUser.username,
-            email: data.email ?? currentUser.email,
-            phone_number: data.phone_number ?? currentUser.phone_number,
-            role: data.role,
+          //  id: data.id,
+            full_name: data.first_name + " " + data.last_name,
+            username: data.username,
+            email: data.email,
+            phone_number: data.phone_number,
+          //  role: data.role,
           });
         }
-      } catch {
-        if (isMounted) {
-          setProfile(currentUser);
-        }
+      } catch (error) {
+        console.error("Error loading profile:", error);
       }
     }
 

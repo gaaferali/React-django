@@ -20,13 +20,20 @@ useEffect(() => {
   if (!property) return null;
   if (!property) return null;
 
-const user = JSON.parse(
-  localStorage.getItem("aman_user") || "{}"
-);
-
+const user = JSON.parse(localStorage.getItem("aman_user") || "{}");
+//const role =JSON.parse(localStorage.getItem("role") || "null");
+//const role = localStorage.getItem("role") || "";
+//console.log("role:", role);
+//console.log("result.user.role:", user.role, "role:", user.role);
+//console.log("user:", user);
+//console.log("ROLE:", role);
 const isOwner = user.id === property.owner_id;
 
 const API_URL = "http://127.0.0.1:8000";
+//console.log("user_id:", user.id);
+//console.log("owner_id:", property.owner_id);
+//console.log("isOwner:", isOwner);
+//console.log(property);
 
 return (
   <section className="offer-details-page">

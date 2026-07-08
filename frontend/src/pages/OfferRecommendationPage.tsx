@@ -31,7 +31,7 @@ export function OfferRecommendationPage() {
       </form>
       {message ? <p className="notice">{message}</p> : null}
       <div className="property-grid">
-        {recommendations.map((property) => <PropertyCard key={property.property_id} property={property} />)}
+        {recommendations.map((property) => <PropertyCard key={property.id} property={property} />)}
       </div>
     </section>
   );

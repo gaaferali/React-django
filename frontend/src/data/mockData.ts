@@ -1,6 +1,6 @@
 import type { Chat, ChatMessage, Deal, Property, ReportRow, User } from "../types/aman";
 
-export const currentUser: User = {
+{/*export const currentUser: User = {
   user_id: 7,
   full_name: "Amani Hassan",
   username: "amani_owner",
@@ -8,7 +8,7 @@ export const currentUser: User = {
   phone_number: "+249912345678",
   id_number: "SD-998812",
   role: "Owner"
-};
+};*/}
 
 
 export const chats: Chat[] = [

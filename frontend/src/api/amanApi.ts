@@ -1,4 +1,4 @@
-import { chatMessages, chats, currentUser, deals, reportRows } from "../data/mockData";
+import { chatMessages, chats, deals, reportRows } from "../data/mockData";
 import type {
   FairPriceAverageResult,
   ReportType,
@@ -29,6 +29,7 @@ export type AmanAuthResponse = {
   access: string;
   refresh: string;
   role?: string;
+  
   user: AmanUserResponse;
 };
 
@@ -45,146 +46,129 @@ export type AmanMessageResponse = {
 
 
 
-async function placeholderApi<T>(endpoint: string, fallback: T, options: ApiOptions = {}): Promise<T> {
-  try {
-    const headers: Record<string, string> = {};
+export async function api<T>(
+  endpoint: string,
+  options: ApiOptions = {}
+): Promise<T> {
 
-    const token = localStorage.getItem("aman_access_token");
-    if (options.auth !== false && token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
+  const headers: Record<string, string> = {};
 
-    let body: BodyInit | undefined;
-    if (options.body instanceof FormData) {
-      body = options.body;
-    } else if (options.body !== undefined) {
-      headers["Content-Type"] = "application/json";
-      body = JSON.stringify(options.body);
-    }
+  // Add JWT token if authentication is required
+  const token = localStorage.getItem("aman_access_token");
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: options.method ?? "GET",
-      headers,
-      body
-    });
-
-    if (!response.ok) {
-      const errorBody = await response.json().catch(() => ({ detail: `Request failed: ${endpoint}` }));
-      throw new Error(JSON.stringify(errorBody));
-    }
-
-    return (await response.json()) as T;
-  } catch (error) {
-    if (!(error instanceof TypeError)) {
-      throw error;
-    }
-    return fallback;
+  if (options.auth && token) {
+    headers.Authorization = `Bearer ${token}`;
   }
+
+
+  let body: BodyInit | undefined;
+
+  if (options.body instanceof FormData) {
+    body = options.body;
+  } 
+  else if (options.body !== undefined) {
+    headers["Content-Type"] = "application/json";
+    body = JSON.stringify(options.body);
+  }
+
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: options.method ?? "GET",
+    headers,
+    body
+  });
+
+
+  if (!response.ok) {
+    const errorData = await response
+      .json()
+      .catch(() => ({
+        detail: `Request failed: ${endpoint}`
+      }));
+
+    throw new Error(JSON.stringify(errorData));
+  }
+
+
+  return (await response.json()) as T;
 }
 
 export const amanApi = {
   registration: (payload: Partial<User> & { password: string; confirm_password?: string }) =>
-    placeholderApi<AmanAuthResponse>(
+    api<AmanAuthResponse>(
       "/register/",
-      {
-        message: "User account created successfully",
-        access: "placeholder-access-token",
-        refresh: "placeholder-refresh-token",
-        user: {
-          full_name: "",
-          username: "",
-          email: "",
-          phone_number: "",
-          role: "Owner"
-        }
-      },
       { method: "POST", body: payload, auth: false }
     ),
 
   login: (payload: { username: string; password: string }) =>
-    placeholderApi<AmanAuthResponse>(
+    api<AmanAuthResponse>(
       "/login/",
-      {
-        message: "Login successful",
-        access: "placeholder-access-token",
-        refresh: "placeholder-refresh-token",
-        user: {
-          full_name: "",
-          username: payload.username,
-          email: "",
-          phone_number: "",
-          role: "Seeker"
-        }
-      },
       { method: "POST", body: payload, auth: false }
     ),
 
   editInformation: (
     payload: Partial<User> & {
+      username?: string;
+      email?: string;
+      phone_number?: string;
+      full_name?: string;
       password?: string;
       confirm_password?: string;
       current_password?: string;
     }
   ) =>
-    placeholderApi<{ message: string; user: AmanUserResponse }>(
+    api<{ message: string; user: AmanUserResponse }>(
       "/edit-information/",
-      {
-        message: "Information updated successfully",
-        user: {
-          full_name: currentUser.full_name,
-          username: currentUser.username,
-          email: currentUser.email,
-          phone_number: currentUser.phone_number,
-          role: currentUser.role
-        }
-      },
-      { method: "PATCH", body: payload }
+      { method: "PATCH",  
+             auth: true,
+             body: payload }
     ),
 
   addProperty: (payload: FormData) =>
-    placeholderApi<AmanMessageResponse>(
+    api<AmanMessageResponse>(
       "/addProperty/",
-      { message: "New property offer created" },
       { method: "POST", body: payload }
     ),
 
-manageProperty: () =>
-  placeholderApi<Property[]>(
-    "/my-properties/",
-    [],
-    {
+  manageProperty: () =>
+    api<Property[]>(
+      "/my-properties/",
+      {
+        method: "GET",
+        auth: true
+      }
+    ),
+
+  deleteProperty: (propertyId: number) =>
+    api<AmanMessageResponse>(`/manage-property/${propertyId}/`,  { method: "DELETE" ,auth: true}),
+
+  updatePropertyValidity: (propertyId: number) =>
+    api<AmanMessageResponse>(`/manage-property/${propertyId}/validity/`, { method: "PATCH" }),
+
+  searchForProperty: (criteria: SearchCriteria) =>
+    api<Property[]>(
+    "/search-for-property/",
+      { method: "POST", body: criteria }
+    ),
+
+  searchFilter: (criteria: Partial<SearchCriteria>) =>
+  api<Property[]>(
+    "/search-filter/",
+    { method: "POST", body: criteria }
+  ),
+
+  offerDisplay: () => api<Property[]>(
+    "/offer-display/",
+       {
       method: "GET",
       auth: true
     }
   ),
 
-  deleteProperty: (propertyId: number) =>
-    placeholderApi(`/manage-property/${propertyId}/`, { message: "Property deleted" }, { method: "DELETE" }),
-
-  updatePropertyValidity: (propertyId: number) =>
-    placeholderApi(`/manage-property/${propertyId}/validity/`, { message: "Property validity updated for 30 days" }, { method: "PATCH" }),
-
-  //searchForProperty: (criteria: SearchCriteria) =>
-  //  placeholderApi(
-    //  "/search-for-property/",
-      //property.filter((property) => {
-        //return (!criteria.city || property.city.toLowerCase().includes(criteria.city.toLowerCase())) &&
-          //(!criteria.property_type || property.property_type === criteria.property_type) &&
-          //(!criteria.transaction_type || property.transaction_type === criteria.transaction_type);
-      //}),
-      //{ method: "POST", body: criteria }
-    //),
-
-  //searchFilter: (criteria: Partial<SearchCriteria>) =>
-    //placeholderApi("/search-filter/", property.id, { method: "POST", body: criteria }),
-
-  //offerDisplay: () => placeholderApi("/offer-display/", Property.filter((property) => property.status === "Active")),
-
 
 offerDetails: (propertyId: number) =>
-  placeholderApi<Property>(
-    `/offer-display/${propertyId}/`,
-    {} as Property,
+  api<Property>(
+    `/offer-Details/${propertyId}/`,
     {
       method: "GET",
       auth: true
@@ -204,44 +188,32 @@ offerDetails: (propertyId: number) =>
       { method: "POST", body: criteria }
     ),*/
 
-  fairPriceAverage: (criteria: Partial<SearchCriteria> & { month: string }): Promise<FairPriceAverageResult> =>
-    placeholderApi(
-      "/fair-price-average/",
-      {
-        average_price: 375000,
-        listing_count: 5,
-        message: "Average price calculated from similar listings in the same city."
-      },
-      { method: "POST", body: criteria }
-    ),
+  //fairPriceAverage: (criteria: Partial<SearchCriteria> & { month: string }): Promise<FairPriceAverageResult> =>
+    //api(
+      //"/fair-price-average/",
 
-  contact: () => placeholderApi("/contact/", { chats, messages: chatMessages }),
+      //{ method: "POST", body: criteria }
+    //),
 
-  sendMessage: (payload: { chat_id: number; messages_text: string }) =>
-    placeholderApi("/contact/messages/", { message: "Message delivered successfully", payload }, { method: "POST", body: payload }),
+ // contact: () => api("/contact/", { chats, messages: chatMessages }),
 
-  deals: () => placeholderApi("/deals/", deals),
+  //sendMessage: (payload: { chat_id: number; messages_text: string }) =>
+    //api("/contact/messages/", { message: "Message delivered successfully", payload }, { method: "POST", body: payload }),
 
-  sendDealRequest: (payload: { property_id: number; owner_id: number }) =>
-    placeholderApi("/deals/", { message: "Deal request created with Pending status", payload }, { method: "POST", body: payload }),
+  //deals: () => api("/deals/", deals),
 
-  updateDealStatus: (dealId: number, status: string) =>
-    placeholderApi(`/deals/${dealId}/`, { message: `Deal status changed to ${status}` }, { method: "PATCH", body: { status } }),
+  //sendDealRequest: (payload: { property_id: number; owner_id: number }) =>
+    //api("/deals/", { message: "Deal request created with Pending status", payload }, { method: "POST", body: payload }),
 
-  reports: (reportType: ReportType) =>
-    placeholderApi(`/reports/?type=${reportType}`, reportRows.filter((row) => row.type.toLowerCase().includes(reportType.slice(0, -1)))),
+  //updateDealStatus: (dealId: number, status: string) =>
+    //api(`/deals/${dealId}/`, { message: `Deal status changed to ${status}` }, { method: "PATCH", body: { status } }),
+
+  //reports: (reportType: ReportType) =>
+    //api(`/reports/?type=${reportType}`, reportRows.filter((row) => row.type.toLowerCase().includes(reportType.slice(0, -1)))),
 
   getUserProfile: () =>
-    placeholderApi<AmanProfileResponse>(
+    api(
       "/account/",
-      {
-        id: currentUser.user_id,
-        full_name: currentUser.full_name,
-        username: currentUser.username,
-        email: currentUser.email,
-        phone_number: currentUser.phone_number,
-        role: currentUser.role
-      },
       {
         method: "GET",
         auth: true
@@ -251,9 +223,8 @@ offerDetails: (propertyId: number) =>
   logout: () => {
     const refresh = localStorage.getItem("aman_refresh_token");
 
-    return placeholderApi<AmanMessageResponse>(
+    return api<AmanMessageResponse>(
       "/logout/",
-      { message: "User logged out successfully" },
       {
         method: "POST",
         auth: false,

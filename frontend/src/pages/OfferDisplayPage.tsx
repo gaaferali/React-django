@@ -9,13 +9,15 @@ export function OfferDisplayPage() {
 
   useEffect(() => {
     amanApi.offerDisplay().then(setOffers);
+    //const access =localStorage.getItem("aman_access_token");
+    //console.log("refresh token:", refrech);
   }, []);
 
   return (
     <section>
       <PageHeader eyebrow="FR-08 / UC-08" title="Offer Display" description="All active property offers with price, area, location, images, and description." />
       <div className="property-grid">
-        {offers.map((property) => <PropertyCard key={property.property_id} property={property} />)}
+        {offers.map((property) => <PropertyCard key={property.id} property={property} />)}
       </div>
     </section>
   );
