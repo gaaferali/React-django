@@ -10,6 +10,7 @@ from .views import (
     SearchPropertiesView,
     filterPropertiesView,
     ShowPropertiesView,
+    FairPriceAverageView,
 )
 
 urlpatterns = [
@@ -22,5 +23,6 @@ urlpatterns = [
     #path("manage-property/<int:pk>/validity/", DeletePropertyView.as_view()),
     path("search-for-property/", SearchPropertiesView.as_view()),
     path ("search-filter/", filterPropertiesView.as_view()),
-    path("offer-display/", ShowPropertiesView.as_view())
+    path("offer-display/", ShowPropertiesView.as_view()),
+    path("fair-price-average/", FairPriceAverageView.as_view())
 ]

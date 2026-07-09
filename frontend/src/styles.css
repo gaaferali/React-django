@@ -822,3 +822,24 @@ th {
     flex: none;
   }
 }
+
+
+
+
+
+
+
+
+
+
+.property-title {
+  background-color: var(--teal);
+  color: black;
+  padding: 12px 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 25px 0 15px;
+  display: inline-block;
+}

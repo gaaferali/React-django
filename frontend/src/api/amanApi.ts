@@ -188,12 +188,11 @@ offerDetails: (propertyId: number) =>
       { method: "POST", body: criteria }
     ),*/
 
-  //fairPriceAverage: (criteria: Partial<SearchCriteria> & { month: string }): Promise<FairPriceAverageResult> =>
-    //api(
-      //"/fair-price-average/",
-
-      //{ method: "POST", body: criteria }
-    //),
+  fairPriceAverage: (criteria: Partial<SearchCriteria> & { month: string }): Promise<FairPriceAverageResult> =>
+    api(
+      "/fair-price-average/",
+      { method: "POST", body: criteria }
+    ),
 
  // contact: () => api("/contact/", { chats, messages: chatMessages }),
 

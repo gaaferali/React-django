@@ -1,5 +1,6 @@
 from django.shortcuts import render
 # Create your views here.
+from django.db.models import Avg
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -229,3 +230,73 @@ class filterPropertiesView(APIView):
         )
 
         return Response(serializer.data)
+    
+class FairPriceAverageView(APIView):
+    
+    def post(self, request):
+        criteria = request.data
+
+        queryset = Property.objects.all()
+
+        if "transaction_type" in criteria:
+            queryset = queryset.filter(
+                transaction_type=criteria["transaction_type"]
+            )
+
+        if "property_type" in criteria:
+            queryset = queryset.filter(
+                property_type=criteria["property_type"]
+            )
+
+        if "state" in criteria:
+            queryset = queryset.filter(
+                state__icontains=criteria["state"]
+            )
+
+        if "city" in criteria:
+            queryset = queryset.filter(
+                city__icontains=criteria["city"]
+            )
+
+        if "bedroom" in criteria:
+            queryset = queryset.filter(
+                bedrooms__gte=criteria["bedroom"]
+            )
+
+
+        if "min_price" in criteria:
+            queryset = queryset.filter(
+                price__gte=criteria["min_price"]
+            )
+
+        if "max_price" in criteria:
+            queryset = queryset.filter(
+                price__lte=criteria["max_price"]
+            )
+        if criteria.get("month"):
+            year, month = map(int, criteria["month"].split("-"))
+            queryset = queryset.filter(
+                created_at__year=year,
+                created_at__month=month
+            )
+
+        listing_count = queryset.count()
+
+        average_price = queryset.aggregate(
+            Avg("price")
+        )["price__avg"]
+
+        serializer = PropertySerializer(
+            queryset,
+            many=True
+        )
+        return Response({
+            "average_price": average_price,
+            "listing_count": listing_count,
+            "properties": serializer.data,
+            "message": (
+                "Average price calculated successfully."
+                if listing_count
+                else "No matching properties found."
+            ),
+        }) 

@@ -111,5 +111,6 @@ export type ReportRow = {
 export type FairPriceAverageResult = {
   average_price: number | null;
   listing_count: number;
+  properties: Property[];
   message: string;
 };

@@ -33,11 +33,13 @@ class PropertySerializer(serializers.ModelSerializer):
             "description",
             "property_document",
             "images",
+            "created_at",
         ]
 
         read_only_fields = [
             "id",
             "images",
+            "created_at",
         ]
 
 
