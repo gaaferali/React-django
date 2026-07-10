@@ -4,26 +4,16 @@ import { amanApi } from "../api/amanApi";
 //import { currentUser } from "../data/mockData";
 import { Field } from "../components/forms/Field";
 import { PageHeader } from "../components/ui/PageHeader";
-import type { User } from "../types/aman";
+//import type { User } from "../types/aman";
 import { useNavigate } from "react-router-dom";
 
-type Profile = {
-//  id: number;
-  full_name: string;
-  username: string;
-  email: string;
-  phone_number: string;
-  //role?: string;
-};
-
-export function EditInformationPage() {
-  const navigate = useNavigate();
+export function ResetPasswordPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const navigate = useNavigate();
+  //const [profile, setProfile] = useState<Profile | null>(null);
 
-
-  useEffect(() => {
+ /* useEffect(() => {
     let isMounted = true;
 
     async function loadProfile() {
@@ -49,20 +39,7 @@ export function EditInformationPage() {
       isMounted = false;
     };
   }, []);
-
-const role = localStorage.getItem("aman_user_role");
-  function onResetPassword(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-      if (role === "OWNER") {
-    navigate("/owner/reset-password");
-  } else {
-    navigate("/seeker/reset-password");
-  }
-
-  }
-
-
-
+*/
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget; // Save the form reference
@@ -72,51 +49,41 @@ const role = localStorage.getItem("aman_user_role");
     );
 
     try {
-      const result = await amanApi.editInformation(payload as never);
+      const result = await amanApi.resetpassword(payload as never);
       setMessage(result.message);
       setError("");
-      form.reset();
-    } catch (apiError) {
+      //form.reset();
+        try {
+          console.log(localStorage.getItem("aman_refresh_token"));
+              await amanApi.logout();
+       }catch (error) {
+              console.log("Logout error:", error);
+       }
+
+      localStorage.removeItem("aman_access_token");
+      localStorage.removeItem("aman_refresh_token");
+
+      navigate("/login");
+      }
+    catch (apiError) {
       setMessage("");
       setError(apiError instanceof Error ? apiError.message : "Update failed.");
     }
   }
-
-  if (!profile) {
-    return (
-      <section>
-        <PageHeader
-          eyebrow="FR-03 / UC-03"
-          title="Edit Information"
-          description="Update profile information for Owner and Seeker users."
-        />
-        <p className="notice">Loading your profile...</p>
-      </section>
-    );
-  }
-
   return (
     <section>
       <PageHeader
         eyebrow="FR-03 / UC-03"
-        title="Edit Information"
-        description="Update profile information for Owner and Seeker users."
+        title="Reset Password"
+        description="Update your password."
       />
-      <form className="form-grid" onSubmit={onResetPassword}>
-          <button className="button form-submit" type="submit">
-          <Save size={18} />
-          Reset password
-        </button>
-      </form>
       <form className="form-grid" onSubmit={onSubmit}>
-        <Field id="full_name" name="full_name" label="Full name" defaultValue={profile.full_name} />
-        <Field id="username" name="username" label="Username" defaultValue={profile.username} />
-        <Field id="email" name="email" label="Email" type="email" defaultValue={profile.email} />
-        <Field id="phone_number" name="phone_number" label="Phone number" defaultValue={profile.phone_number} />
         <Field id="current_password" name="current_password" label="Current password" type="password" />
+        <Field id="password" name="password" label="New password" type="password" minLength={8} />
+        <Field id="confirm_password" name="confirm_password" label="Confirm new password" type="password" minLength={8} />
         <button className="button form-submit" type="submit">
           <Save size={18} />
-          Save changes
+          Reset password
         </button>
       </form>
       {message ? <p className="notice">{message}</p> : null}

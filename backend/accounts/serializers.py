@@ -92,6 +92,7 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)

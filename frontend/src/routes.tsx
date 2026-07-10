@@ -3,7 +3,7 @@ import { SeekerLayout } from "./components/layout/SeekerLayout";
 import { AdminLayout } from "./components/layout/AdminLayout";
 import { OwnerLayout } from "./components/layout/OwnerLayout";
 
-
+import { ResetPasswordPage } from "./pages/ResetPassword";
 import { AddPropertyPage } from "./pages/AddPropertyPage";
 import { AdminDashboardPage } from "./pages/AdminDashboardPage";
 import { ContactPage } from "./pages/ContactPage";
@@ -43,6 +43,7 @@ export const router = createBrowserRouter([
       { path: "add-property", element: <AddPropertyPage /> },
       { path: "manage-property", element: <ManagePropertyPage /> },
       { path: "offerDetails/:propertyId", element: <OfferDetailsPage /> },
+      { path: "reset-password", element: <ResetPasswordPage /> },
       { path: "deals", element: <DealsPage /> },
       { path: "logout", element: <LogoutPage /> },
       { path: "profile/edit-information", element: <EditInformationPage /> },
@@ -64,6 +65,7 @@ export const router = createBrowserRouter([
       { path: "offer-recommendation", element: <OfferRecommendationPage /> },
       { path: "fair-price-average", element: <FairPriceAveragePage /> },
       { path: "profile/edit-information", element: <EditInformationPage /> },
+      { path: "reset-password", element: <ResetPasswordPage /> },
       { path: "logout", element: <LogoutPage /> },
       { path: "contact", element: <ContactPage /> }
     ]

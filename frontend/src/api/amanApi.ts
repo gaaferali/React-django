@@ -106,14 +106,19 @@ export const amanApi = {
       { method: "POST", body: payload, auth: false }
     ),
 
+
+  resetpassword: (payload: { current_password: string; password: string; confirm_password: string }) =>
+    api<AmanMessageResponse>("/reset-password/", { method: "PATCH", body: payload, auth: true }),
+
+
   editInformation: (
     payload: Partial<User> & {
       username?: string;
       email?: string;
       phone_number?: string;
       full_name?: string;
-      password?: string;
-      confirm_password?: string;
+    //  password?: string;
+    //  confirm_password?: string;
       current_password?: string;
     }
   ) =>
@@ -144,6 +149,7 @@ export const amanApi = {
 
   updatePropertyValidity: (propertyId: number) =>
     api<AmanMessageResponse>(`/manage-property/${propertyId}/validity/`, { method: "PATCH" }),
+
 
   searchForProperty: (criteria: SearchCriteria) =>
     api<Property[]>(

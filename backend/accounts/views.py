@@ -90,6 +90,25 @@ class UpdateInformationView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+    
+class ResetPasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+        user = request.user
+        serializer = UserSerializer(user, data=request.data, partial=True)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.update_information(user, serializer.validated_data)
+        user.save()
+
+        return Response(
+            {
+                "message": "Password reset successfully",
+                "user": UserSerializer(user).data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
