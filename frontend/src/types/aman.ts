@@ -11,6 +11,18 @@ export type User = {
   role: UserRole;
 };
 
+
+
+export type deals = {
+  deal_id: number;
+  seeker_id: number;
+  owner_id: number;
+  property_id: number;
+  property_title: string;
+  status: "Requested" | "Completed" | "Rejected";
+  created_at: string;
+  rating?: number;
+};
 /*export type Property = {
   property_id: number;
   owner_id: number;

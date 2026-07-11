@@ -9,7 +9,8 @@ import type { Property } from "../types/aman";
 export function OfferDetailsPage() {
   const { propertyId } = useParams();
   const [property, setProperty] = useState<Property | null>(null);
-
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 useEffect(() => {
   if (propertyId) {
     amanApi.offerDetails(Number(propertyId))
@@ -34,7 +35,17 @@ const API_URL = "http://127.0.0.1:8000";
 //console.log("owner_id:", property.owner_id);
 //console.log("isOwner:", isOwner);
 //console.log(property);
-
+const handleDealRequest = async () => {
+    try {
+          const result = await amanApi.sendDealRequest(property.id);
+           setMessage(result.message);
+           setError("");
+    }
+    catch (apiError) {
+           setMessage("");
+           setError(apiError instanceof Error ? apiError.message : "Failed to send deal request.");
+    }
+};
 return (
   <section className="offer-details-page">
     <PageHeader
@@ -124,14 +135,19 @@ return (
           Contact Owner
         </Link>
 
-        <Link className="button button-secondary" to="/deals">
+        <button
+        className="button button-secondary"
+        onClick={handleDealRequest}
+        >
           <HeartHandshake size={18} />
           Send Deal Request
-        </Link>
+        </button>
       </div>
       )}
 
     </div>
+    {message && <p className="success-message">{message}</p>}
+    {error && <p className="error-message">{error}</p>}
   </section>
-);
+  );
 }

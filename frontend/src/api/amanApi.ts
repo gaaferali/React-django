@@ -1,10 +1,11 @@
-import { chatMessages, chats, deals, reportRows } from "../data/mockData";
+import { chatMessages, chats, reportRows } from "../data/mockData";
 import type {
   FairPriceAverageResult,
   ReportType,
   SearchCriteria,
   User,
-  Property
+  Property,
+  deals,
 } from "../types/aman";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api";
@@ -40,7 +41,6 @@ export type AmanProfileResponse = AmanUserResponse & {
 export type AmanMessageResponse = {
   message: string;
 };
-
 
 
 
@@ -205,10 +205,17 @@ offerDetails: (propertyId: number) =>
   //sendMessage: (payload: { chat_id: number; messages_text: string }) =>
     //api("/contact/messages/", { message: "Message delivered successfully", payload }, { method: "POST", body: payload }),
 
-  //deals: () => api("/deals/", deals),
+  deals: () => api<deals[]>("/deals/", { method: "GET", auth: true }),
 
-  //sendDealRequest: (payload: { property_id: number; owner_id: number }) =>
-    //api("/deals/", { message: "Deal request created with Pending status", payload }, { method: "POST", body: payload }),
+  updateDealStatus: (dealId: number, status: string) =>
+     api<AmanMessageResponse>(`/deals/${dealId}/`, 
+       { method: "PATCH", body: { status } }),
+sendDealRequest: (property: number) =>
+    api<AmanMessageResponse>("/request-deals/", {
+        method: "POST",
+        body: { property },
+        auth: true
+    }),
 
   //updateDealStatus: (dealId: number, status: string) =>
     //api(`/deals/${dealId}/`, { message: `Deal status changed to ${status}` }, { method: "PATCH", body: { status } }),

@@ -11,7 +11,7 @@ export function AddPropertyPage() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
   event.preventDefault();
 
-  const form = event.currentTarget; // Save the form reference
+  const form = event.currentTarget; // save ال refe
 
   const formData = new FormData(form);
 
@@ -33,7 +33,7 @@ export function AddPropertyPage() {
     setMessage(result.message ?? "New property offer created");
     setError("");
 
-    form.reset(); // This should clear all inputs
+    form.reset(); // clear the inpots
   } catch (apiError) {
     setMessage("");
     setError(

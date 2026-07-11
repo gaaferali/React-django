@@ -32,7 +32,7 @@ async function confirmLogout() {
   } catch (error) {
     console.log("Logout error:", error);
 
-    // حتى لو فشل backend، اعمل logout محلي
+    // the deeelteing of the token
     localStorage.removeItem("aman_access_token");
     localStorage.removeItem("aman_refresh_token");
 

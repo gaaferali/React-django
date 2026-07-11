@@ -2,21 +2,21 @@ import type { Chat, ChatMessage, Deal, Property, ReportRow, User } from "../type
 
 {/*export const currentUser: User = {
   user_id: 7,
-  full_name: "Amani Hassan",
+  full_name: "jaafer ali",
   username: "amani_owner",
-  email: "amani@example.com",
-  phone_number: "+249912345678",
-  id_number: "SD-998812",
+  email: "jaafer@example.com",
+  phone_number: "0991444525",
+  id_number: "1",
   role: "Owner"
 };*/}
 
 
 export const chats: Chat[] = [
   {
-    chat_id: 501,
+    chat_id: 511,
     property_id: 101,
-    seeker_id: 22,
-    owner_id: 7,
+    seeker_id: 1,
+    owner_id: 1,
     property_title: "Rent Apartment in Omdurman",
     last_message: "Can we confirm the property document?",
     updated_at: "2026-06-29"
@@ -48,7 +48,7 @@ export const deals: Deal[] = [
     owner_id: 7,
     property_id: 101,
     property_title: "Rent Apartment in Omdurman",
-    status: "Pending",
+    status: "Completed",
     created_at: "2026-06-29"
   },
   {

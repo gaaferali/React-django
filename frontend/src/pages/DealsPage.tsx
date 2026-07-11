@@ -3,10 +3,10 @@ import { CheckCircle2, Star } from "lucide-react";
 import { amanApi } from "../api/amanApi";
 import { PageHeader } from "../components/ui/PageHeader";
 import { StatusBadge } from "../components/ui/StatusBadge";
-import type { Deal } from "../types/aman";
+import type { deals } from "../types/aman";
 
 export function DealsPage() {
-  const [deals, setDeals] = useState<Deal[]>([]);
+  const [deals, setDeals] = useState<deals[]>([]);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
