@@ -4,6 +4,7 @@ import { amanApi } from "../api/amanApi";
 import { Field } from "../components/forms/Field";
 import { PageHeader } from "../components/ui/PageHeader";
 import type { Chat, ChatMessage } from "../types/aman";
+import { data } from "react-router-dom";
 
 export function ContactPage() {
   const [chats, setChats] = useState<Chat[]>([]);
@@ -12,8 +13,9 @@ export function ContactPage() {
 
   useEffect(() => {
     amanApi.contact().then((result) => {
-      setChats(result.chats);
-      setMessages(result.messages);
+      const data = result as { chats: Chat[]; messages: ChatMessage[] };
+      setChats(data.chats);
+      setMessages(data.messages);
     });
   }, []);
 
@@ -21,7 +23,8 @@ export function ContactPage() {
     event.preventDefault();
     const payload = Object.fromEntries(new FormData(event.currentTarget).entries()) as { chat_id: string; messages_text: string };
     const result = await amanApi.sendMessage({ chat_id: Number(payload.chat_id), messages_text: payload.messages_text });
-    setNotice(result.message);
+    const data = result as { message: string };
+    setNotice(data.message);
     event.currentTarget.reset();
   }
 

@@ -12,7 +12,7 @@ export function OfferRecommendationPage() {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const result = await amanApi.offerRecommendation(Object.fromEntries(new FormData(event.currentTarget).entries()) as Partial<SearchCriteria>);
+    const result = await amanApi.offerRecommendation(Object.fromEntries(new FormData(event.currentTarget).entries()) as Partial<SearchCriteria>) as { message: string; recommendations: Property[] };
     setMessage(result.message);
     setRecommendations(result.recommendations);
   }

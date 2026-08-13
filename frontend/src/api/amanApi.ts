@@ -5,6 +5,12 @@ import type {
   SearchCriteria,
   User,
   Property,
+  ContactResult,
+  SendMessageResult,
+  Deal,
+  PropertyImage,
+  Chat,
+  ChatMessage,
   deals,
 } from "../types/aman";
 
@@ -193,6 +199,14 @@ offerDetails: (propertyId: number) =>
       },
       { method: "POST", body: criteria }
     ),*/
+  offerRecommendation: (criteria: Partial<SearchCriteria>) =>
+    api(
+      "/offer-recommendation/",
+
+      { method: "POST", body: criteria }
+    ),
+
+
 
   fairPriceAverage: (criteria: Partial<SearchCriteria> & { month: string }): Promise<FairPriceAverageResult> =>
     api(
@@ -201,7 +215,10 @@ offerDetails: (propertyId: number) =>
     ),
 
  // contact: () => api("/contact/", { chats, messages: chatMessages }),
+ contact: () => api("/contact/", { body: { chats, messages: chatMessages } }),
 
+  sendMessage: (payload: { chat_id: number; messages_text: string }) =>
+    api("/contact/messages/", { method: "POST", body: payload }),
   //sendMessage: (payload: { chat_id: number; messages_text: string }) =>
     //api("/contact/messages/", { message: "Message delivered successfully", payload }, { method: "POST", body: payload }),
 
@@ -219,6 +236,8 @@ sendDealRequest: (property: number) =>
 
   //updateDealStatus: (dealId: number, status: string) =>
     //api(`/deals/${dealId}/`, { message: `Deal status changed to ${status}` }, { method: "PATCH", body: { status } }),
+ reports: (reportType: ReportType) =>
+    api(`/reports/?type=${reportType}`, { method: "GET", auth: true }),
 
   //reports: (reportType: ReportType) =>
     //api(`/reports/?type=${reportType}`, reportRows.filter((row) => row.type.toLowerCase().includes(reportType.slice(0, -1)))),

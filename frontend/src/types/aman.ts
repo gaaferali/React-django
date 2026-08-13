@@ -98,6 +98,19 @@ export type ChatMessage = {
   read_at?: string;
 };
 
+
+
+export interface ContactResult {
+  chats: Chat[];
+  messages: ChatMessage[];
+};
+
+export interface SendMessageResult {
+  message: string;
+};
+
+
+
 export type Deal = {
   deal_id: number;
   seeker_id: number;

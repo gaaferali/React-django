@@ -10,7 +10,7 @@ export function ReportsPage() {
   const [rows, setRows] = useState<ReportRow[]>([]);
 
   useEffect(() => {
-    amanApi.reports(selectedType).then(setRows);
+    amanApi.reports(selectedType).then((data) => setRows(data as ReportRow[]));
   }, [selectedType]);
 
   return (
