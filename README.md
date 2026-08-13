@@ -1,4 +1,4 @@
-
+i should add idempotency in the Apis after i finsh the real time chating app with the socket connection 
 
 ## Description
 the web application is working 
