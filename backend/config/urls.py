@@ -24,6 +24,8 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('api/', include('deals.urls')),
     path('api/', include('properties.urls')),
+    path("api/chating/",include("chating.urls"),),
+    
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

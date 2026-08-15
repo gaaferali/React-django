@@ -80,22 +80,36 @@ export type SearchCriteria = {
 };
 
 export type Chat = {
-  chat_id: number;
+  id: number;
+
   property_id: number;
-  seeker_id: number;
-  owner_id: number;
   property_title: string;
-  last_message: string;
+
+  seeker_id: number | null;
+  seeker_name: string | null;
+
+  owner_id: number | null;
+  owner_name: string | null;
+
+  created_at: string;
   updated_at: string;
+
+  last_message: string;
 };
 
+
 export type ChatMessage = {
-  message_id: number;
-  chat_id: number;
-  sender_user_id: number;
+  id: number;
+
+  chat: number;
+
+  sender: number | null;
+
   messages_text: string;
+
   created_at: string;
-  read_at?: string;
+
+  read_at: string | null;
 };
 
 

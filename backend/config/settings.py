@@ -43,6 +43,7 @@ REST_FRAMEWORK = {
 INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
+    'channels',
     'rest_framework_simplejwt.token_blacklist',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'accounts',
     'properties',
     'deals',
+    'chating',
 ]
 
 MIDDLEWARE = [
@@ -84,8 +86,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
-
+#WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = "config.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -97,6 +99,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
    #     'NAME': BASE_DIR / 'db.sqlite3',
     #}
 #}
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
 
 
 DATABASES = {

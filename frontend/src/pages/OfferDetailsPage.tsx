@@ -130,10 +130,14 @@ return (
       </div>
       {!isOwner && (
       <div className="button-row">
-        <Link className="button" to="/contact">
-          <MessageCircle size={18} />
-          Contact Owner
-        </Link>
+        <Link
+  className="button"
+  to={`/seeker/contact?property_id=${property.id}`}
+>
+  <MessageCircle size={18} />
+  Contact Owner
+</Link>
+       
 
         <button
         className="button button-secondary"

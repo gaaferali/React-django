@@ -1,4 +1,4 @@
-import { chatMessages, chats, reportRows } from "../data/mockData";
+//import { chatMessages, reportRows } from "../data/mockData";
 import type {
   FairPriceAverageResult,
   ReportType,
@@ -138,7 +138,9 @@ export const amanApi = {
   addProperty: (payload: FormData) =>
     api<AmanMessageResponse>(
       "/addProperty/",
-      { method: "POST", body: payload }
+      { method: "POST",
+        auth: true,
+        body: payload }
     ),
 
   manageProperty: () =>
@@ -215,10 +217,21 @@ offerDetails: (propertyId: number) =>
     ),
 
  // contact: () => api("/contact/", { chats, messages: chatMessages }),
- contact: () => api("/contact/", { body: { chats, messages: chatMessages } }),
-
-  sendMessage: (payload: { chat_id: number; messages_text: string }) =>
-    api("/contact/messages/", { method: "POST", body: payload }),
+contact: (propertyId?: number) =>
+  api<{
+    chats: Chat[];
+    messages: ChatMessage[];
+  }>(
+    propertyId
+      ? `/chating/contact/?property_id=${propertyId}`
+      : `/chating/contact/`,
+    {
+      method: "GET",
+      auth: true,
+    }
+  ),
+  //sendMessage: (payload: { chat_id: number; messages_text: string }) =>
+  //  api("/contact/messages/", { method: "POST", body: payload }),
   //sendMessage: (payload: { chat_id: number; messages_text: string }) =>
     //api("/contact/messages/", { message: "Message delivered successfully", payload }, { method: "POST", body: payload }),
 

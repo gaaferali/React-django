@@ -11,19 +11,9 @@ import type { Chat, ChatMessage, Deal, Property, ReportRow, User } from "../type
 };*/}
 
 
-export const chats: Chat[] = [
-  {
-    chat_id: 511,
-    property_id: 101,
-    seeker_id: 1,
-    owner_id: 1,
-    property_title: "Rent Apartment in Omdurman",
-    last_message: "Can we confirm the property document?",
-    updated_at: "2026-06-29"
-  }
-];
 
-export const chatMessages: ChatMessage[] = [
+
+/*export const chatMessages: ChatMessage[] = [
   {
     message_id: 1,
     chat_id: 501,
@@ -39,7 +29,7 @@ export const chatMessages: ChatMessage[] = [
     created_at: "2026-06-29 10:24",
     read_at: "2026-06-29 10:25"
   }
-];
+];*/
 
 export const deals: Deal[] = [
   {
