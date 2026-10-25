@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -53,6 +54,11 @@ class ContactView(APIView):
             owner = property_obj.owner
 
             if user.id != owner.id:
+                if user.role != "Seeker":
+                    return Response(
+                        {"detail": "Only seekers can start a property chat."},
+                        status=status.HTTP_403_FORBIDDEN,
+                    )
 
                 chat, created = Chat.objects.get_or_create(
                     property_id=property_obj,

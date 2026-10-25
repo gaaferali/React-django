@@ -8,37 +8,26 @@ export function LogoutPage() {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
 
- {/* async function confirmLogout() {
-    const result = await amanApi.logout();
+  function clearSession() {
     localStorage.removeItem("aman_access_token");
     localStorage.removeItem("aman_refresh_token");
-    setMessage(result.message);
-    window.setTimeout(() => navigate("/login"), 500);
-  }*/}
-
-async function confirmLogout() {
-  try {
-    const result = await amanApi.logout();
-
-    localStorage.removeItem("aman_access_token");
-    localStorage.removeItem("aman_refresh_token");
-
-    setMessage(result.message);
-
-    window.setTimeout(() => {
-      navigate("/login");
-    }, 500);
-
-  } catch (error) {
-    console.log("Logout error:", error);
-
-    // the deeelteing of the token
-    localStorage.removeItem("aman_access_token");
-    localStorage.removeItem("aman_refresh_token");
-
-    navigate("/login");
+    localStorage.removeItem("aman_user");
+    localStorage.removeItem("role");
   }
-}
+
+  async function confirmLogout() {
+    try {
+      const result = await amanApi.logout();
+      setMessage(result.message);
+      window.setTimeout(() => {
+        clearSession();
+        navigate("/login");
+      }, 500);
+    } catch {
+      clearSession();
+      navigate("/login");
+    }
+  }
 
   return (
     <section>

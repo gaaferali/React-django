@@ -1,0 +1,45 @@
+# Environment and secrets
+.env
+.env.*
+!.env.Example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+backend/venv/
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Django runtime and generated files
+backend/db.sqlite3
+backend/media/
+backend/staticfiles/
+
+# Node / Vite
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+*.tsbuildinfo
+
+# Local tooling and analysis
+graphify-out/
+.agents/
+.codex/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+

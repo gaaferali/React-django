@@ -20,8 +20,9 @@ export function RegistrationPage() {
       localStorage.setItem("aman_access_token", result.access);
       localStorage.setItem("aman_refresh_token", result.refresh);
       localStorage.setItem("role", result.role ?? result.user?.role ?? "");
+      localStorage.setItem("aman_user", JSON.stringify(result.user ?? {}));
 
-      setMessage(result.message);
+      setMessage(result.message ?? "User account created successfully.");
       setError("");
 
       const role = result.role ?? result.user?.role;
@@ -53,7 +54,7 @@ export function RegistrationPage() {
         <Field id="username" name="username" label="Username" required />
         <Field id="phone_number" name="phone_number" label="Phone number" required />
         {/*<Field id="id_number" name="id_number" label="ID number" required />*/}
-        <SelectField id="role" name="role" label="Account type" options={["Owner", "Seeker", "Admin"]} required />
+        <SelectField id="role" name="role" label="Account type" options={["Owner", "Seeker"]} required />
         <Field id="password" name="password" label="Password" type="password" minLength={8} required />
         <Field id="confirm_password" name="confirm_password" label="Confirm password" type="password" minLength={8} required />
         <button className="button form-submit" type="submit">

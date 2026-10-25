@@ -9,11 +9,17 @@ import type { Property, SearchCriteria } from "../types/aman";
 
 export function SearchForPropertyPage() {
   const [results, setResults] = useState<Property[]>([]);
+  const [error, setError] = useState("");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const criteria = Object.fromEntries(new FormData(event.currentTarget).entries()) as SearchCriteria;
-    setResults(await amanApi.searchForProperty(criteria));
+    try {
+      setResults(await amanApi.searchForProperty(criteria));
+      setError("");
+    } catch (apiError) {
+      setError(apiError instanceof Error ? apiError.message : "Search failed.");
+    }
   }
 
   return (
@@ -29,12 +35,13 @@ export function SearchForPropertyPage() {
         <SelectField id="property_type" name="property_type" label="Property type" options={["Apartment", "House", "Land"]} />
         <Field id="state" name="state" label="State" />
         <Field id="city" name="city" label="City" />
-        <Field id="bedroom" name="bedrooms" label="Bedrooms" type="number" min="0" />
-        <Field id="bathroom" name="bathrooms" label="Bathrooms" type="number" min="0" />
+        <Field id="bedroom" name="bedroom" label="Bedrooms" type="number" min="0" />
+        <Field id="bathroom" name="bathroom" label="Bathrooms" type="number" min="0" />
         <Field id="min_price" name="min_price" label="Minimum price" type="number" min="0" />
         <Field id="max_price" name="max_price" label="Maximum price" type="number" min="0" />
         <button className="button form-submit" type="submit"><Search size={18} />Search</button>
       </form>
+      {error ? <p className="notice danger">{error}</p> : null}
       <div className="property-grid">
         {results.map((property) => <PropertyCard key={property.id} property={property} />)}
       </div>

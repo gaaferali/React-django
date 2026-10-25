@@ -28,9 +28,9 @@ export function AddPropertyPage() {
   }
 
   try {
-    const result = await amanApi.addProperty(formData);
+    await amanApi.addProperty(formData);
 
-    setMessage(result.message ?? "New property offer created");
+    setMessage("New property offer created.");
     setError("");
 
     form.reset(); // clear the inpots

@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import type { ReactNode } from "react";
 import { SeekerLayout } from "./components/layout/SeekerLayout";
 import { AdminLayout } from "./components/layout/AdminLayout";
 import { OwnerLayout } from "./components/layout/OwnerLayout";
@@ -24,6 +25,22 @@ import { SearchForPropertyPage } from "./pages/SearchForPropertyPage";
 import { SeekerHomePage } from "./pages/SeekerHomePage";
 
 
+function RequireRole({ role, children }: { role: string; children: ReactNode }) {
+  const token = localStorage.getItem("aman_access_token");
+  const currentRole = localStorage.getItem("role");
+  if (!token) return <Navigate to="/login" replace />;
+  if (currentRole !== role) {
+    const homeByRole: Record<string, string> = {
+      Admin: "/admin/dashboard",
+      Owner: "/owner/home",
+      Seeker: "/seeker/home",
+    };
+    return <Navigate to={homeByRole[currentRole ?? ""] ?? "/login"} replace />;
+  }
+  return <>{children}</>;
+}
+
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -36,7 +53,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/owner",
-    element: <OwnerLayout />,
+    element: <RequireRole role="Owner"><OwnerLayout /></RequireRole>,
     children: [
       { index: true, element: <Navigate to="/owner/home" replace /> },
       { path: "home", element: <OwnerHomePage /> },
@@ -52,7 +69,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/seeker",
-    element: <SeekerLayout />,
+    element: <RequireRole role="Seeker"><SeekerLayout /></RequireRole>,
     children: [
       { index: true, element: <Navigate to="/seeker/home" replace /> },
       { path: "home", element: <SeekerHomePage /> },
@@ -72,7 +89,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: <RequireRole role="Admin"><AdminLayout /></RequireRole>,
     children: [
       { index: true, element: <Navigate to="/admin/dashboard" replace /> },
       { path: "dashboard", element: <AdminDashboardPage /> },

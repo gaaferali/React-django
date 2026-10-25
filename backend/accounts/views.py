@@ -36,17 +36,7 @@ class AccountView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-
-        return Response({
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "phone_number": user.phone_number,
-            "role": user.role,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-        })
+        return Response(UserSerializer(request.user).data)
     
 class LogoutView(APIView):
 
@@ -81,7 +71,6 @@ class UpdateInformationView(APIView):
 
         serializer.is_valid(raise_exception=True)
         serializer.update_information(user, serializer.validated_data)
-        user.save()
 
         return Response(
             {
@@ -95,12 +84,16 @@ class ResetPasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
     def patch(self, request):
+        if not request.data.get("password"):
+            return Response(
+                {"password": ["A new password is required."]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         user = request.user
         serializer = UserSerializer(user, data=request.data, partial=True)
 
         serializer.is_valid(raise_exception=True)
         serializer.update_information(user, serializer.validated_data)
-        user.save()
 
         return Response(
             {

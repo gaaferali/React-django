@@ -1,28 +1,38 @@
 from django.urls import path
-from rest_framework_simplejwt.views import (
-    TokenRefreshView
-)
+
 from .views import (
-    PropertyCreateView,
-    MyPropertiesView,
     DeletePropertyView,
-    ThePropertiesView,
-    SearchPropertiesView,
-    filterPropertiesView,
-    ShowPropertiesView,
     FairPriceAverageView,
+    MyPropertiesView,
+    OfferRecommendationView,
+    PropertyCreateView,
+    PropertyDetailView,
+    PropertyValidityView,
+    ReportsView,
+    SearchPropertiesView,
+    ShowPropertiesView,
 )
 
+
 urlpatterns = [
-    path("addProperty/", PropertyCreateView.as_view()),
-    path("token/refresh/", TokenRefreshView.as_view(), name="refresh"),
-    path("my-properties/", MyPropertiesView.as_view()),
-    path("properties/<int:pk>/", DeletePropertyView.as_view()),
-    path("offer-Details/<int:pk>/", ThePropertiesView.as_view()),
-    path("manage-property/<int:pk>/", DeletePropertyView.as_view()),
-    #path("manage-property/<int:pk>/validity/", DeletePropertyView.as_view()),
-    path("search-for-property/", SearchPropertiesView.as_view()),
-    path ("search-filter/", filterPropertiesView.as_view()),
-    path("offer-display/", ShowPropertiesView.as_view()),
-    path("fair-price-average/", FairPriceAverageView.as_view())
+    path("addProperty/", PropertyCreateView.as_view(), name="property-create"),
+    path("my-properties/", MyPropertiesView.as_view(), name="my-properties"),
+    path("properties/<int:pk>/", DeletePropertyView.as_view(), name="property-delete"),
+    path("offer-Details/<int:pk>/", PropertyDetailView.as_view(), name="property-detail"),
+    path("manage-property/<int:pk>/", DeletePropertyView.as_view(), name="manage-property"),
+    path(
+        "manage-property/<int:pk>/validity/",
+        PropertyValidityView.as_view(),
+        name="property-validity",
+    ),
+    path("search-for-property/", SearchPropertiesView.as_view(), name="property-search"),
+    path("search-filter/", SearchPropertiesView.as_view(), name="property-filter"),
+    path("offer-display/", ShowPropertiesView.as_view(), name="offer-display"),
+    path(
+        "offer-recommendation/",
+        OfferRecommendationView.as_view(),
+        name="offer-recommendation",
+    ),
+    path("fair-price-average/", FairPriceAverageView.as_view(), name="fair-price-average"),
+    path("reports/", ReportsView.as_view(), name="reports"),
 ]

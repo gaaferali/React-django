@@ -59,6 +59,8 @@ export type Property = {
   description: string;
   property_document: string | null;
   images: PropertyImage[];
+  created_at: string;
+  valid_until: string;
 };
 
 
@@ -73,8 +75,8 @@ export type SearchCriteria = {
   property_type: string;
   state: string;
   city: string;
-  bedrooms: string;
-  bathrooms: string;
+  bedroom: string;
+  bathroom: string;
   min_price: string;
   max_price: string;
 };
@@ -104,6 +106,8 @@ export type ChatMessage = {
   chat: number;
 
   sender: number | null;
+
+  client_message_id: string | null;
 
   messages_text: string;
 

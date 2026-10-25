@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import User
@@ -31,6 +32,10 @@ class UserSerializer(serializers.ModelSerializer):
         current_password = attrs.get("current_password")
 
         if self.instance is None:
+            if attrs.get("role") == "Admin":
+                raise serializers.ValidationError(
+                    {"role": "Administrator accounts cannot be created publicly."}
+                )
             if not password:
                 raise serializers.ValidationError({"password": "Password is required."})
             if not confirm_password:
@@ -42,8 +47,24 @@ class UserSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"current_password": "Current password is required."})
             if not self.instance.check_password(current_password):
                 raise serializers.ValidationError({"current_password": "Current password is incorrect."})
-            if confirm_password and password != confirm_password:
+            if not confirm_password:
+                raise serializers.ValidationError(
+                    {"confirm_password": "Please confirm the password."}
+                )
+            if password != confirm_password:
                 raise serializers.ValidationError({"confirm_password": "Passwords do not match."})
+
+        if (
+            self.instance is not None
+            and "role" in attrs
+            and attrs["role"] != self.instance.role
+        ):
+            raise serializers.ValidationError(
+                {"role": "Account roles cannot be changed through this endpoint."}
+            )
+
+        if password:
+            validate_password(password, self.instance)
 
         return attrs
 
@@ -79,10 +100,6 @@ class UserSerializer(serializers.ModelSerializer):
         validated_data.pop("confirm_password", None)
 
         if password:
-            if not current_password:
-                raise serializers.ValidationError({"current_password": "Current password is required."})
-            if not instance.check_password(current_password):
-                raise serializers.ValidationError({"current_password": "Current password is incorrect."})
             instance.set_password(password)
 
         for attr, value in validated_data.items():

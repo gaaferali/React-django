@@ -7,9 +7,9 @@ export function AdminDashboardPage() {
     <section>
       <PageHeader eyebrow="Admin scope" title="Admin Dashboard" description="Admin portal for report generation and operational visibility without interfering with offers or users." />
       <div className="feature-grid">
-        <FeatureCard code="FR-13" title="Owner Reports" description="Generate reports about owners and their property types." to="/admin/reports?type=owners" icon={UsersRound} />
-        <FeatureCard code="FR-13" title="Seeker Reports" description="Generate reports about seekers and their property preferences." to="/admin/reports?type=seekers" icon={FileBarChart2} />
-        <FeatureCard code="FR-13" title="Property Reports" description="Generate property reports filtered by a specific factor." to="/admin/reports?type=properties" icon={Building2} />
+        <FeatureCard code="FR-13" title="Owner Reports" description="Review owners and the number of listings they manage." to="/admin/reports?type=owners" icon={UsersRound} />
+        <FeatureCard code="FR-13" title="Seeker Reports" description="Review seekers and their deal activity." to="/admin/reports?type=seekers" icon={FileBarChart2} />
+        <FeatureCard code="FR-13" title="Property Reports" description="Review property inventory grouped by city and property type." to="/admin/reports?type=properties" icon={Building2} />
       </div>
     </section>
   );

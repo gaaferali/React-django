@@ -1,19 +1,15 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Save } from "lucide-react";
 import { amanApi } from "../api/amanApi";
-//import { currentUser } from "../data/mockData";
 import { Field } from "../components/forms/Field";
 import { PageHeader } from "../components/ui/PageHeader";
-import type { User } from "../types/aman";
 import { useNavigate } from "react-router-dom";
 
 type Profile = {
-//  id: number;
   full_name: string;
   username: string;
   email: string;
   phone_number: string;
-  //role?: string;
 };
 
 export function EditInformationPage() {
@@ -28,19 +24,21 @@ export function EditInformationPage() {
 
     async function loadProfile() {
       try {
-        const data = await amanApi.getUserProfile() as User;
+        const data = await amanApi.getUserProfile();
         if (isMounted) {
           setProfile({
-          //  id: data.id,
-            full_name: data.first_name + " " + data.last_name,
+            full_name: data.full_name,
             username: data.username,
             email: data.email,
             phone_number: data.phone_number,
-          //  role: data.role,
           });
         }
-      } catch (error) {
-        console.error("Error loading profile:", error);
+      } catch (apiError) {
+        if (isMounted) {
+          setError(
+            apiError instanceof Error ? apiError.message : "Failed to load profile."
+          );
+        }
       }
     }
 
@@ -50,22 +48,17 @@ export function EditInformationPage() {
     };
   }, []);
 
-const role = localStorage.getItem("aman_user_role");
+  const role = localStorage.getItem("role");
   function onResetPassword(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-      if (role === "OWNER") {
-    navigate("/owner/reset-password");
-  } else {
-    navigate("/seeker/reset-password");
-  }
-
+    navigate(role === "Owner" ? "/owner/reset-password" : "/seeker/reset-password");
   }
 
 
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = event.currentTarget; // Save the form reference
+    const form = event.currentTarget;
     const formData = new FormData(form);
     const payload = Object.fromEntries(
       Array.from(formData.entries()).filter(([, value]) => value !== "")
@@ -75,7 +68,13 @@ const role = localStorage.getItem("aman_user_role");
       const result = await amanApi.editInformation(payload as never);
       setMessage(result.message);
       setError("");
-      form.reset();
+      localStorage.setItem("aman_user", JSON.stringify(result.user));
+      setProfile({
+        full_name: result.user.full_name,
+        username: result.user.username,
+        email: result.user.email,
+        phone_number: result.user.phone_number,
+      });
     } catch (apiError) {
       setMessage("");
       setError(apiError instanceof Error ? apiError.message : "Update failed.");
@@ -90,7 +89,9 @@ const role = localStorage.getItem("aman_user_role");
           title="Edit Information"
           description="Update profile information for Owner and Seeker users."
         />
-        <p className="notice">Loading your profile...</p>
+        <p className={`notice${error ? " danger" : ""}`}>
+          {error || "Loading your profile..."}
+        </p>
       </section>
     );
   }

@@ -8,26 +8,50 @@ import type { Property } from "../types/aman";
 export function ManagePropertyPage() {
   const [items, setItems] = useState<Property[]>([]);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    amanApi.manageProperty().then(setItems);
+    amanApi
+      .manageProperty()
+      .then(setItems)
+      .catch((apiError) =>
+        setError(apiError instanceof Error ? apiError.message : "Failed to load properties.")
+      );
   }, []);
 
   async function refreshValidity(propertyId: number) {
-    const result = await amanApi.updatePropertyValidity(propertyId);
-    setMessage(result.message);
+    try {
+      const result = await amanApi.updatePropertyValidity(propertyId);
+      setItems((current) =>
+        current.map((property) =>
+          property.id === propertyId
+            ? { ...property, valid_until: result.valid_until }
+            : property
+        )
+      );
+      setMessage(result.message);
+      setError("");
+    } catch (apiError) {
+      setError(apiError instanceof Error ? apiError.message : "Renewal failed.");
+    }
   }
 
   async function deleteProperty(propertyId: number) {
-    const result = await amanApi.deleteProperty(propertyId);
-    setItems((current) => current.filter((property) => property.id !== propertyId));
-    setMessage(result.message);
+    try {
+      const result = await amanApi.deleteProperty(propertyId);
+      setItems((current) => current.filter((property) => property.id !== propertyId));
+      setMessage(result.message);
+      setError("");
+    } catch (apiError) {
+      setError(apiError instanceof Error ? apiError.message : "Deletion failed.");
+    }
   }
 
   return (
     <section>
-      <PageHeader eyebrow="FR-05 / UC-05" title="Manage Property" description="Owner listing management with edit, delete, and 30-day validity refresh actions." />
+      <PageHeader eyebrow="FR-05 / UC-05" title="Manage Property" description="Owner listing management with deletion and 30-day validity renewal actions." />
       {message ? <p className="notice">{message}</p> : null}
+      {error ? <p className="notice danger">{error}</p> : null}
       <div className="stack">
         {items.map((property) => (
           <div className="management-row" key={property.id}>
