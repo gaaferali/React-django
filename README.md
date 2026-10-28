@@ -230,7 +230,7 @@ docker compose config --quiet
 
 ## Jenkins CI/CD
 
-Create a Jenkins Pipeline job and set the Script Path to:
+ Jenkins Pipeline job :
 
 ```text
 jenkins/Jenkinsfile
@@ -246,15 +246,3 @@ The pipeline performs the following stages:
 6. Optionally builds Docker images through the `BUILD_IMAGES` parameter.
 7. Optionally deploys the `main` branch through the `DEPLOY` parameter.
 
-Production deployment requires a Jenkins Secret file credential named `aman-production-env`. Its content must follow `.env.Example` and contain production-safe values.
-
-## Production Checklist
-
-- Set `DEBUG=False`.
-- Use strong, unique values for `SECRET_KEY` and `DB_PASSWORD`.
-- Restrict `ALLOWED_HOSTS` and `CORS_ALLOWED_ORIGINS` to trusted domains.
-- Run PostgreSQL and Redis on persistent, protected infrastructure.
-- Terminate HTTPS at Nginx or an upstream load balancer.
-- Back up the PostgreSQL database and uploaded media volume.
-- Keep `.env`, local databases, uploaded media, dependency directories, and build artifacts outside version control.
-- Run migrations and the full validation pipeline before deployment.
