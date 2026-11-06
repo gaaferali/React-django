@@ -28,7 +28,6 @@ frontend/dist/
 *.tsbuildinfo
 
 # Local tooling and analysis
-graphify-out/
 .agents/
 .codex/
 

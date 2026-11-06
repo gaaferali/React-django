@@ -1,6 +1,6 @@
-# AMAN Real Estate Platform
+#  Real Estate Platform
 
-AMAN is a full-stack real estate platform for publishing, discovering, and managing residential property offers. It connects property owners and seekers through role-based accounts, structured property search, deal workflows, and real-time messaging.
+it is a full-stack real estate platform for publishing, discovering, and managing residential property offers. It connects property owners and seekers through role-based accounts, structured property search, deal workflows, and real-time messaging.
 
 The application is designed as a production-oriented web system with a React client, a Django REST API, PostgreSQL persistence, Redis-backed WebSocket messaging, Nginx routing, Docker Compose orchestration, and a Jenkins CI/CD pipeline.
 
